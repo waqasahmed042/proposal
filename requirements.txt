@@ -1,0 +1,26 @@
+# Core
+flask
+docxtpl
+python-dotenv
+
+# Email via Microsoft Graph API
+requests
+
+# Staff sign-in via Microsoft Entra ID (Azure AD) OAuth
+msal
+
+# PDF signature stamping
+PyMuPDF
+
+# DOCX -> PDF via MS Word (Windows dev machines only; Linux uses the
+# LibreOffice fallback in docx_to_pdf, so this is inert on the VPS)
+docx2pdf
+
+# Production WSGI server (used on the VPS)
+gunicorn
+
+# python-docx — used by app.py's inject_deferred_signing_tags()
+python-docx
+
+# Testing (dev only — not needed in production)
+pytest

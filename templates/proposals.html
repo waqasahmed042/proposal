@@ -1,0 +1,1076 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proposals — Concept Engineers</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      background: #f0f4f8;
+      color: #1a202c;
+      min-height: 100vh
+    }
+
+    /* Header */
+    header {
+      background: #153d2b;
+      color: white;
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .2)
+    }
+
+    header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -.3px;
+      white-space: nowrap
+    }
+
+    .header-badge {
+      font-size: 10px;
+      background: rgba(255, 255, 255, .12);
+      padding: 4px 10px;
+      border-radius: 20px;
+      color: rgba(255, 255, 255, .7);
+      white-space: nowrap;
+      margin-top: 4px;
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 8px;
+      margin-left: auto
+    }
+
+    .nav-btn {
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1.5px solid rgba(255, 255, 255, .25);
+      background: transparent;
+      color: rgba(255, 255, 255, .8);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .2s;
+      white-space: nowrap;
+      cursor: pointer
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+      background: rgba(255, 255, 255, .18);
+      color: white;
+      border-color: rgba(255, 255, 255, .5)
+    }
+
+    .nav-btn svg {
+      width: 15px;
+      height: 15px
+    }
+
+    /* Shell */
+    .shell {
+      max-width: 1100px;
+      margin: 28px auto;
+      padding: 0 16px 64px
+    }
+
+    /* Page title */
+    .page-title {
+      margin-bottom: 20px
+    }
+
+    .page-title h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #153d2b
+    }
+
+    .page-title h2 .accent {
+      color: #e87722
+    }
+
+    .page-title p {
+      font-size: 13px;
+      color: #718096;
+      margin-top: 2px
+    }
+
+    /* Stats row */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px
+    }
+
+    .stat-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px
+    }
+
+    .stat-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .stat-icon svg {
+      width: 20px;
+      height: 20px
+    }
+
+    .stat-icon.blue {
+      background: #eaf5ef;
+      color: #2f8556
+    }
+
+    .stat-icon.amber {
+      background: #fffbeb;
+      color: #d97706
+    }
+
+    .stat-icon.green {
+      background: #f0fdf4;
+      color: #16a34a
+    }
+
+    .stat-icon.red {
+      background: #fff5f5;
+      color: #e53e3e
+    }
+
+    .stat-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #718096;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      margin-bottom: 2px
+    }
+
+    .stat-value {
+      font-size: 26px;
+      font-weight: 700;
+      color: #1a202c;
+      line-height: 1
+    }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px
+    }
+
+    .search-wrap svg {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 15px;
+      height: 15px;
+      color: #a0aec0;
+      pointer-events: none
+    }
+
+    #searchInput {
+      width: 100%;
+      padding: 8px 10px 8px 32px;
+      border: 1px solid #cbd5e0;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #2d3748;
+      background: white;
+      transition: border-color .15s
+    }
+
+    #searchInput:focus {
+      outline: none;
+      border-color: #2f8556;
+      box-shadow: 0 0 0 3px rgba(47, 133, 86, .1)
+    }
+
+    .filter-select {
+      padding: 8px 10px;
+      border: 1px solid #cbd5e0;
+      border-radius: 6px;
+      font-size: 13px;
+      color: #2d3748;
+      background: white;
+      cursor: pointer
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: #2f8556
+    }
+
+    .btn-new {
+      background: #153d2b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background .15s
+    }
+
+    .btn-new:hover {
+      background: #2f8556
+    }
+
+    .btn-new svg {
+      width: 15px;
+      height: 15px
+    }
+
+    /* Table card */
+    .table-card {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden
+    }
+
+    .table-wrap {
+      overflow-x: auto
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 680px
+    }
+
+    thead th {
+      background: #f7f9fc;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 11px;
+      font-weight: 600;
+      color: #718096;
+      text-transform: uppercase;
+      letter-spacing: .4px;
+      white-space: nowrap
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #f0f4f8;
+      transition: background .1s
+    }
+
+    tbody tr:last-child {
+      border-bottom: none
+    }
+
+    tbody tr:hover {
+      background: #fafbfc
+    }
+
+    td {
+      padding: 12px 14px;
+      vertical-align: middle
+    }
+
+    .td-ref {
+      font-weight: 600;
+      color: #153d2b;
+      font-size: 13px
+    }
+
+    .td-client {
+      font-weight: 500;
+      font-size: 13px
+    }
+
+    .td-email {
+      font-size: 12px;
+      color: #718096;
+      margin-top: 2px
+    }
+
+    .td-address {
+      font-size: 12px;
+      color: #4a5568;
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis
+    }
+
+    .td-date {
+      font-size: 12px;
+      color: #4a5568;
+      white-space: nowrap
+    }
+
+    /* Status badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .3px;
+      white-space: nowrap
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    .badge.pending {
+      background: #fffbeb;
+      color: #92400e
+    }
+
+    .badge.pending .badge-dot {
+      background: #d97706
+    }
+
+    .badge.signed {
+      background: #f0fdf4;
+      color: #166534
+    }
+
+    .badge.signed .badge-dot {
+      background: #16a34a
+    }
+
+    .badge.expired {
+      background: #fff5f5;
+      color: #991b1b
+    }
+
+    .badge.expired .badge-dot {
+      background: #e53e3e
+    }
+
+    .badge.void {
+      background: #f1f5f9;
+      color: #475569
+    }
+
+    .badge.void .badge-dot {
+      background: #94a3b8
+    }
+
+    .badge.invited {
+      background: #fff4ec;
+      color: #9a3412
+    }
+
+    .badge.invited .badge-dot {
+      background: #e87722
+    }
+
+    /* A signed Smart Quote is an accepted indicative quote, not a
+       finalised proposal — uses the brand black so it reads as distinct
+       from .badge.signed (leaf green) and doesn't get mistaken for a fully
+       executed engagement. */
+    .badge.quote_accepted {
+      background: #ecefec;
+      color: #1a1a1a
+    }
+
+    .badge.quote_accepted .badge-dot {
+      background: #3f3f46
+    }
+
+    /* Actions */
+    .actions {
+      display: flex;
+      gap: 4px;
+      align-items: center
+    }
+
+    .btn-action {
+      border: none;
+      border-radius: 5px;
+      padding: 4px 8px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      transition: all .15s;
+      white-space: nowrap;
+      text-decoration: none
+    }
+
+    .btn-action svg {
+      width: 12px;
+      height: 12px
+    }
+
+    .btn-view {
+      background: #eaf5ef;
+      color: #2f8556
+    }
+
+    .btn-view:hover {
+      background: #d6ecdf
+    }
+
+    .btn-pdf {
+      background: #fff5f5;
+      color: #c53030
+    }
+
+    .btn-pdf:hover {
+      background: #fed7d7
+    }
+
+    .btn-doc {
+      background: #eaf5ef;
+      color: #256b45
+    }
+
+    .btn-doc:hover {
+      background: #d6ecdf
+    }
+
+    .btn-resend {
+      background: #f0fdf4;
+      color: #16a34a
+    }
+
+    .btn-resend:hover {
+      background: #dcfce7
+    }
+
+    .btn-resend:disabled {
+      background: #f1f5f9;
+      color: #94a3b8;
+      cursor: not-allowed
+    }
+
+    /* Empty state */
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: #718096
+    }
+
+    .empty svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 14px;
+      color: #cbd5e0
+    }
+
+    .empty h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 6px
+    }
+
+    .empty p {
+      font-size: 13px
+    }
+
+    /* Pagination */
+    .pagination-wrap {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px
+    }
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center
+    }
+
+    .page-btn {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 7px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      color: #153d2b;
+      transition: all .15s;
+      display: flex;
+      align-items: center;
+      gap: 5px
+    }
+
+    .page-btn:hover:not(:disabled) {
+      background: #f7f9fc;
+      border-color: #153d2b
+    }
+
+    .page-btn:disabled {
+      opacity: .38;
+      cursor: not-allowed
+    }
+
+    .page-btn svg {
+      width: 14px;
+      height: 14px
+    }
+
+    .page-nums {
+      display: flex;
+      gap: 4px
+    }
+
+    .page-num {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      min-width: 36px;
+      height: 36px;
+      padding: 0 6px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      color: #4a5568;
+      transition: all .15s
+    }
+
+    .page-num:hover {
+      background: #f7f9fc;
+      border-color: #153d2b;
+      color: #153d2b
+    }
+
+    .page-num.active {
+      background: #153d2b;
+      border-color: #153d2b;
+      color: white;
+      font-weight: 600
+    }
+
+    .page-info {
+      font-size: 12px;
+      color: #718096
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      color: white;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, .15);
+      z-index: 999;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity .25s, transform .25s;
+      pointer-events: none;
+      max-width: 320px
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    .toast.success {
+      background: #16a34a
+    }
+
+    .toast.error {
+      background: #e53e3e
+    }
+
+    .toast.info {
+      background: #2f8556
+    }
+
+    /* Responsive */
+    @media(max-width:900px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    @media(max-width:580px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .toolbar {
+        flex-direction: column;
+        align-items: stretch
+      }
+
+      .search-wrap {
+        width: 100%
+      }
+
+      header {
+        padding: 0 12px
+      }
+
+      .nav-btn span {
+        display: none
+      }
+
+      .stat-value {
+        font-size: 22px
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <a href="/" style="color:white;text-decoration:none">
+      <h1>Concept Engineers</h1>
+    </a>
+    <div class="header-badge">Proposal System</div>
+    <nav class="header-nav">
+      <a href="/" class="nav-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        <span>Home</span>
+      </a>
+      <a href="/new-proposal" class="nav-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+        </svg>
+        <span>New Proposal</span>
+      </a>
+      <a href="/proposals" class="nav-btn active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6" />
+          <line x1="8" y1="12" x2="21" y2="12" />
+          <line x1="8" y1="18" x2="21" y2="18" />
+          <line x1="3" y1="6" x2="3.01" y2="6" />
+          <line x1="3" y1="12" x2="3.01" y2="12" />
+          <line x1="3" y1="18" x2="3.01" y2="18" />
+        </svg>
+        <span>Proposals</span>
+      </a>
+      {% if user %}
+      <span class="nav-btn" style="cursor:default;border-color:rgba(255,255,255,.15)" title="{{ user.email }}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+          <circle cx="12" cy="7" r="4" />
+        </svg>
+        <span>{{ user.email }}</span>
+      </span>
+      <a href="/auth/logout" class="nav-btn" title="Sign out">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+        <span>Sign out</span>
+      </a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <div class="shell">
+
+    <div class="page-title">
+      <h2>Sent Proposals <span class="accent">&amp; Quote Estimates</span></h2>
+      <p>Track all proposals sent for signing.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-icon blue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+            <polyline points="14 2 14 8 20 8" />
+          </svg>
+        </div>
+        <div>
+          <div class="stat-label">Total Sent</div>
+          <div class="stat-value">{{ stats.total or 0 }}</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon amber">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+        </div>
+        <div>
+          <div class="stat-label">Awaiting Signature</div>
+          <div class="stat-value">{{ stats.pending or 0 }}</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+        </div>
+        <div>
+          <div class="stat-label">Signed</div>
+          <div class="stat-value">{{ stats.signed or 0 }}</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon red">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="15" y1="9" x2="9" y2="15" />
+            <line x1="9" y1="9" x2="15" y2="15" />
+          </svg>
+        </div>
+        <div>
+          <div class="stat-label">Expired</div>
+          <div class="stat-value">{{ stats.expired or 0 }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search ref, client, address…" oninput="filterTable()">
+      </div>
+      <select class="filter-select" id="statusFilter" onchange="filterTable()">
+        <option value="">All statuses</option>
+        <option value="invited">Quote invited</option>
+        <option value="pending">Awaiting</option>
+        <option value="signed">Signed</option>
+        <option value="quote_accepted">Quote accepted</option>
+        <option value="expired">Expired</option>
+        <option value="void">Void</option>
+      </select>
+      <a href="/new-proposal" class="btn-new">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+        New Proposal
+      </a>
+    </div>
+
+    <!-- Table -->
+    <div class="table-card">
+      <div class="table-wrap">
+        <table id="proposalTable">
+          <thead>
+            <tr>
+              <th>Ref</th>
+              <th>Client</th>
+              <th>Project Address</th>
+              <th>Status</th>
+              <th>Sent</th>
+              <th>Signed</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            {% for p in proposals %}
+            <tr data-status="{{ p.display_status }}"
+              data-search="{{ p.proposal_ref }} {{ p.client_name }} {{ p.client_email }} {{ p.project_address }}">
+              <td class="td-ref">{{ p.proposal_ref }}</td>
+              <td>
+                <div class="td-client">{{ p.client_name }}</div>
+                <div class="td-email">{{ p.client_email }}</div>
+              </td>
+              <td>
+                <div class="td-address" title="{{ p.project_address }}">{{ p.project_address }}</div>
+              </td>
+              <td>
+                <span class="badge {{ p.display_status }}">
+                  <span class="badge-dot"></span>
+                  {% if p.display_status == 'invited' %}Quote invited
+                  {% elif p.display_status == 'pending' %}Awaiting
+                  {% elif p.display_status == 'signed' %}Signed
+                  {% elif p.display_status == 'quote_accepted' %}Quote accepted
+                  {% elif p.display_status == 'expired' %}Expired
+                  {% else %}Void{% endif %}
+                </span>
+              </td>
+              <td class="td-date">{{ p.created_at[:10] if p.created_at else '—' }}</td>
+              <td class="td-date">{{ p.signed_at[:10] if p.signed_at else '—' }}</td>
+              <td>
+                <div class="actions">
+                  {% if p.is_invite %}
+                  <a href="/quote/{{ p.token }}" target="_blank" class="btn-action btn-view">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                      <circle cx="12" cy="12" r="3" />
+                    </svg>
+                    View
+                  </a>
+                  {% else %}
+                  <a href="/document/{{ p.token }}" target="_blank" class="btn-action btn-pdf"
+                    title="{{ 'View signed PDF' if p.display_status in ('signed', 'quote_accepted') else 'View PDF (unsigned)' }}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                      <polyline points="14 2 14 8 20 8" />
+                    </svg>
+                    PDF
+                  </a>
+                  <a href="/document/{{ p.token }}?fmt=docx" class="btn-action btn-doc"
+                    title="Download original Word document">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
+                    DOC
+                  </a>
+                  {% endif %}
+                  {% if p.display_status in ('pending', 'expired', 'invited') %}
+                  <button class="btn-action btn-resend" data-token="{{ p.token }}"
+                    data-invite="{{ 'true' if p.is_invite else 'false' }}" {% if p.display_status=='expired'
+                    %}title="Link expired — resending will not work unless you extend it" {% endif %}>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <polyline points="23 4 23 10 17 10" />
+                      <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10" />
+                    </svg>
+                    Resend
+                  </button>
+                  {% endif %}
+                </div>
+              </td>
+            </tr>
+            {% else %}
+            <tr id="emptyRow">
+              <td colspan="7">
+                <div class="empty">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                  </svg>
+                  <h3>No proposals sent yet</h3>
+                  <p>Generate and send your first proposal from the <a href="/new-proposal" style="color:#2f8556">New
+                      Proposal</a> page.</p>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="noResults" style="display:none;text-align:center;padding:40px;color:#718096;font-size:13px">
+      No proposals match your search.
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-wrap" id="paginationWrap" style="display:none">
+      <div class="pagination">
+        <button id="prevBtn" class="page-btn" onclick="prevPage()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+          Prev
+        </button>
+        <div id="pageNums" class="page-nums"></div>
+        <button id="nextBtn" class="page-btn" onclick="nextPage()">
+          Next
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
+            stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+      </div>
+      <div class="page-info" id="pageInfo"></div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const PER_PAGE = 20;
+    let currentPage = 1;
+    let filteredRows = [];
+    let allRows = [];
+
+    function showToast(msg, type = 'info') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `toast ${type} show`;
+      setTimeout(() => t.classList.remove('show'), 3500);
+    }
+
+    function filterTable() {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      const status = document.getElementById('statusFilter').value;
+      filteredRows = allRows.filter(row => {
+        const matchSearch = !q || row.dataset.search.toLowerCase().includes(q);
+        const matchStatus = !status || row.dataset.status === status;
+        return matchSearch && matchStatus;
+      });
+      currentPage = 1;
+      renderPage();
+    }
+
+    function renderPage() {
+      const start = (currentPage - 1) * PER_PAGE;
+      const end = start + PER_PAGE;
+      const pageSet = new Set(filteredRows.slice(start, end));
+      allRows.forEach(row => { row.style.display = pageSet.has(row) ? '' : 'none'; });
+
+      const noResults = document.getElementById('noResults');
+      noResults.style.display = (filteredRows.length === 0 && allRows.length > 0) ? 'block' : 'none';
+
+      updatePaginationUI();
+    }
+
+    function updatePaginationUI() {
+      const total = filteredRows.length;
+      const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
+      const start = total === 0 ? 0 : (currentPage - 1) * PER_PAGE + 1;
+      const end = Math.min(currentPage * PER_PAGE, total);
+
+      document.getElementById('pageInfo').textContent =
+        total === 0 ? '' : `Showing ${start}–${end} of ${total} proposal${total !== 1 ? 's' : ''}`;
+      document.getElementById('prevBtn').disabled = currentPage <= 1;
+      document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+
+      // Page number buttons (show up to 7 centred around current page)
+      const pageNums = document.getElementById('pageNums');
+      pageNums.innerHTML = '';
+      const maxBtns = 7;
+      let lo = Math.max(1, currentPage - Math.floor(maxBtns / 2));
+      let hi = Math.min(totalPages, lo + maxBtns - 1);
+      if (hi - lo < maxBtns - 1) lo = Math.max(1, hi - maxBtns + 1);
+      for (let p = lo; p <= hi; p++) {
+        const btn = document.createElement('button');
+        btn.className = 'page-num' + (p === currentPage ? ' active' : '');
+        btn.textContent = p;
+        const pg = p;
+        btn.addEventListener('click', () => { currentPage = pg; renderPage(); });
+        pageNums.appendChild(btn);
+      }
+
+      // Hide pagination bar entirely when everything fits on one page
+      document.getElementById('paginationWrap').style.display = totalPages <= 1 ? 'none' : 'flex';
+    }
+
+    function prevPage() { if (currentPage > 1) { currentPage--; renderPage(); } }
+    function nextPage() {
+      const totalPages = Math.ceil(filteredRows.length / PER_PAGE);
+      if (currentPage < totalPages) { currentPage++; renderPage(); }
+    }
+
+    async function resend(token, btn, isInvite = false) {
+      btn.disabled = true;
+      btn.textContent = 'Sending…';
+      try {
+        const endpoint = isInvite ? `/api/resend-quote/${token}` : `/api/resend/${token}`;
+        const res = await fetch(endpoint, { method: 'POST' });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Failed');
+        showToast(data.message, 'success');
+      } catch (err) {
+        showToast(err.message, 'error');
+        btn.disabled = false;
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg> Resend`;
+      }
+    }
+
+    // Boot — gather rows then render first page
+    document.addEventListener('DOMContentLoaded', () => {
+      allRows = Array.from(document.querySelectorAll('#tableBody tr[data-status]'));
+      filteredRows = [...allRows];
+      renderPage();
+
+      document.querySelectorAll('.btn-resend').forEach(btn => {
+        btn.addEventListener('click', () => {
+          resend(btn.dataset.token, btn, btn.dataset.invite === 'true');
+        });
+      });
+    });
+  </script>
+</body>
+
+</html>

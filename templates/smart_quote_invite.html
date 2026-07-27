@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Smart Quote — Concept Engineers</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      background: #f0f4f8;
+      color: #1a202c;
+      min-height: 100vh
+    }
+
+    /* Header (matches admin pages) */
+    header {
+      background: #153d2b;
+      color: white;
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, .2)
+    }
+
+    header h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -.3px;
+      white-space: nowrap
+    }
+
+    .header-badge {
+      font-size: 10px;
+      background: rgba(255, 255, 255, .12);
+      padding: 4px 10px;
+      border-radius: 20px;
+      color: rgba(255, 255, 255, .7);
+      white-space: nowrap
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 8px;
+      margin-left: auto
+    }
+
+    .nav-btn {
+      font-size: 13px;
+      padding: 6px 14px;
+      border-radius: 20px;
+      border: 1.5px solid rgba(255, 255, 255, .25);
+      background: transparent;
+      color: rgba(255, 255, 255, .8);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .2s;
+      white-space: nowrap
+    }
+
+    .nav-btn:hover,
+    .nav-btn.active {
+      background: rgba(255, 255, 255, .18);
+      color: white;
+      border-color: rgba(255, 255, 255, .5)
+    }
+
+    .nav-btn svg {
+      width: 15px;
+      height: 15px
+    }
+
+    @media(max-width:768px) {
+      .nav-btn span {
+        display: none
+      }
+
+      .header-badge {
+        display: none
+      }
+
+      header {
+        padding: 0 12px
+      }
+    }
+
+    /* Shell */
+    .shell {
+      max-width: 660px;
+      margin: 32px auto;
+      padding: 0 16px 64px
+    }
+
+    .page-title {
+      margin-bottom: 20px
+    }
+
+    .page-title h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: #153d2b
+    }
+
+    .page-title p {
+      font-size: 13px;
+      color: #718096;
+      margin-top: 3px;
+      line-height: 1.5
+    }
+
+    /* How it works strip */
+    .how-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px
+    }
+
+    .how-item {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px 16px;
+      font-size: 12px;
+      color: #4a5568;
+      line-height: 1.5
+    }
+
+    .how-num {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: #e87722;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 8px
+    }
+
+    .how-item strong {
+      display: block;
+      color: #153d2b;
+      font-size: 12.5px;
+      margin-bottom: 2px
+    }
+
+    @media(max-width:580px) {
+      .how-strip {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* Card */
+    .card {
+      background: white;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      margin-bottom: 20px;
+      overflow: hidden
+    }
+
+    .card-head {
+      background: #f7f9fc;
+      border-bottom: 1px solid #e2e8f0;
+      padding: 13px 20px;
+      font-weight: 700;
+      font-size: 13px;
+      color: #153d2b;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .card-head svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      color: #e87722
+    }
+
+    .card-body {
+      padding: 20px
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px
+    }
+
+    @media(max-width:580px) {
+      .grid2 {
+        grid-template-columns: 1fr
+      }
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 4px
+    }
+
+    label .opt {
+      font-weight: 400;
+      color: #a0aec0
+    }
+
+    input[type=text],
+    input[type=email],
+    select,
+    textarea {
+      width: 100%;
+      padding: 9px 11px;
+      border: 1.5px solid #cbd5e0;
+      border-radius: 6px;
+      font-size: 13.5px;
+      color: #2d3748;
+      background: white;
+      transition: border-color .15s;
+      font-family: inherit
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #e87722;
+      box-shadow: 0 0 0 3px rgba(232, 119, 34, .1)
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 72px
+    }
+
+    .btn-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 18px;
+      flex-wrap: wrap
+    }
+
+    .btn-primary {
+      background: #e87722;
+      color: white;
+      border: none;
+      border-radius: 7px;
+      padding: 12px 26px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: background .15s
+    }
+
+    .btn-primary:hover {
+      background: #d16615
+    }
+
+    .btn-primary:disabled {
+      background: #a0aec0;
+      cursor: not-allowed
+    }
+
+    .btn-primary svg {
+      width: 16px;
+      height: 16px
+    }
+
+    .spinner {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      color: #718096;
+      font-size: 13px
+    }
+
+    .spinner.show {
+      display: flex
+    }
+
+    .spin-ring {
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid #e2e8f0;
+      border-top-color: #e87722;
+      border-radius: 50%;
+      animation: spin .7s linear infinite
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    /* Success box */
+    .success-box {
+      display: none;
+      background: #f0fdf4;
+      border: 1.5px solid #86efac;
+      border-radius: 10px;
+      padding: 18px 20px;
+      margin-top: 20px
+    }
+
+    .success-box.show {
+      display: block
+    }
+
+    .success-title {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-weight: 700;
+      color: #166534;
+      font-size: 14px;
+      margin-bottom: 10px
+    }
+
+    .success-title svg {
+      width: 17px;
+      height: 17px
+    }
+
+    .email-status {
+      font-size: 12.5px;
+      padding: 7px 10px;
+      border-radius: 5px;
+      margin-bottom: 12px
+    }
+
+    .email-status.ok {
+      background: #dcfce7;
+      color: #166534
+    }
+
+    .email-status.fail {
+      background: #fee2e2;
+      color: #991b1b
+    }
+
+    .link-row {
+      display: flex;
+      gap: 8px;
+      align-items: stretch
+    }
+
+    .link-box {
+      flex: 1;
+      background: white;
+      border: 1px solid #cbd5e0;
+      border-radius: 6px;
+      padding: 9px 12px;
+      font-size: 12px;
+      color: #4a5568;
+      word-break: break-all;
+      font-family: ui-monospace, monospace
+    }
+
+    .btn-copy {
+      background: #153d2b;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 0 16px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .15s
+    }
+
+    .btn-copy:hover {
+      background: #1d5238
+    }
+
+    .success-actions {
+      margin-top: 12px;
+      display: flex;
+      gap: 10px;
+      font-size: 12.5px
+    }
+
+    .success-actions a {
+      color: #153d2b;
+      font-weight: 600
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: #153d2b;
+      color: white;
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity .3s, transform .3s;
+      pointer-events: none;
+      z-index: 999;
+      max-width: 90vw;
+      text-align: center
+    }
+
+    .toast.success {
+      background: #276749
+    }
+
+    .toast.error {
+      background: #9b2c2c
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0)
+    }
+  </style>
+</head>
+
+<body>
+
+  <header>
+    <a href="/" style="color:white;text-decoration:none">
+      <h1>Concept Engineers</h1>
+    </a>
+    <div class="header-badge">Proposal System</div>
+    <nav class="header-nav">
+      <a href="/" class="nav-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          <polyline points="9 22 9 12 15 12 15 22" />
+        </svg>
+        <span>Home</span>
+      </a>
+      <a href="/new-proposal" class="nav-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+        </svg>
+        <span>New Proposal</span>
+      </a>
+      <a href="/smart-quote" class="nav-btn active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="12" y1="1" x2="12" y2="23" />
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+        </svg>
+        <span>Smart Quote</span>
+      </a>
+      <a href="/proposals" class="nav-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6" />
+          <line x1="8" y1="12" x2="21" y2="12" />
+          <line x1="8" y1="18" x2="21" y2="18" />
+          <line x1="3" y1="6" x2="3.01" y2="6" />
+          <line x1="3" y1="12" x2="3.01" y2="12" />
+          <line x1="3" y1="18" x2="3.01" y2="18" />
+        </svg>
+        <span>Proposals</span>
+      </a>
+      {% if user %}
+      <a href="/auth/logout" class="nav-btn" title="Signed in as {{ user.email }} — sign out">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+          <polyline points="16 17 21 12 16 7" />
+          <line x1="21" y1="12" x2="9" y2="12" />
+        </svg>
+        <span>Sign out</span>
+      </a>
+      {% endif %}
+    </nav>
+  </header>
+
+  <div class="shell">
+
+    <div class="page-title">
+      <h2>Send a Smart Quote Link</h2>
+      <p>Email your client a secure, personal link. They choose their services, build their own budget with live
+        pricing, and sign online — the signed proposal lands in your dashboard automatically.</p>
+    </div>
+
+    <div class="how-strip">
+      <div class="how-item">
+        <div class="how-num">1</div>
+        <strong>You send the link</strong>
+        Enter the client's name and email below — they get a personal quote-builder link.
+      </div>
+      <div class="how-item">
+        <div class="how-num">2</div>
+        <strong>Client builds &amp; signs</strong>
+        They pick services, size and add-ons, see live pricing, and sign on any device.
+      </div>
+      <div class="how-item">
+        <div class="how-num">3</div>
+        <strong>You get notified</strong>
+        The signed PDF is emailed to the team and tracked in the Proposals dashboard.
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+          <polyline points="22,6 12,13 2,6" />
+        </svg>
+        Client details
+      </div>
+      <div class="card-body">
+        <div class="grid2" style="margin-bottom:14px">
+          <div>
+            <label>Client name <span style="color:#e53e3e">*</span></label>
+            <input type="text" id="inv-name" placeholder="David Lee">
+          </div>
+          <div>
+            <label>Client email <span style="color:#e53e3e">*</span></label>
+            <input type="email" id="inv-email" placeholder="david@example.com.au">
+          </div>
+        </div>
+        <div class="grid2" style="margin-bottom:14px">
+          <div>
+            <label>Project / site address <span class="opt">(optional — client can fill this in)</span></label>
+            <input type="text" id="inv-address" placeholder="42 Riverside Drive, Brisbane QLD 4000">
+          </div>
+          <div>
+            <label>Project type <span class="opt">(optional — pre-selects it for the client)</span></label>
+            <select id="inv-project-type">
+              <option value="">Let client choose</option>
+              <option value="residential">Residential Subdivision</option>
+              <option value="commercial">Commercial</option>
+              <option value="industrial">Industrial</option>
+              <option value="service_station">Service Station</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label>Personal message <span class="opt">(optional — shown in the email)</span></label>
+          <textarea id="inv-note"
+            placeholder="Hi David, great speaking with you today. Build your quote here and we'll take it from there."></textarea>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" id="sendBtn" onclick="sendInvite()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13" />
+              <polygon points="22 2 15 22 11 13 2 9 22 2" />
+            </svg>
+            Send Quote Link
+          </button>
+          <div class="spinner" id="spinner">
+            <div class="spin-ring"></div><span>Sending…</span>
+          </div>
+        </div>
+
+        <div class="success-box" id="successBox">
+          <div class="success-title">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+            Quote link created
+          </div>
+          <div class="email-status" id="emailStatus"></div>
+          <div class="link-row">
+            <div class="link-box" id="linkBox"></div>
+            <button class="btn-copy" onclick="copyLink()">Copy</button>
+          </div>
+          <div class="success-actions">
+            <a href="/proposals">View in Proposals →</a>
+            <a href="#" onclick="resetForm();return false">Send another</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    let lastLink = '';
+
+    function toast(msg, type = 'success', dur = 4000) {
+      const el = document.getElementById('toast');
+      el.textContent = msg; el.className = `toast ${type} show`;
+      clearTimeout(el._t); el._t = setTimeout(() => el.className = 'toast', dur);
+    }
+
+    async function sendInvite() {
+      const name = document.getElementById('inv-name').value.trim();
+      const email = document.getElementById('inv-email').value.trim();
+      const address = document.getElementById('inv-address').value.trim();
+      const projectType = document.getElementById('inv-project-type').value;
+      const note = document.getElementById('inv-note').value.trim();
+
+      if (!name || !email) { toast('Client name and email are required', 'error'); return; }
+
+      const btn = document.getElementById('sendBtn');
+      btn.disabled = true;
+      document.getElementById('spinner').classList.add('show');
+
+      try {
+        const res = await fetch('/api/send-quote-invite', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ client_name: name, client_email: email, project_address: address, project_type: projectType, note: note }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error || 'Failed to create quote link');
+
+        lastLink = data.quoteUrl;
+        document.getElementById('linkBox').textContent = data.quoteUrl;
+        const st = document.getElementById('emailStatus');
+        if (data.emailSent) {
+          st.className = 'email-status ok';
+          st.textContent = `✅ Email sent to ${email}`;
+        } else {
+          st.className = 'email-status fail';
+          st.textContent = `⚠️ Link created, but the email failed: ${data.emailError || 'unknown error'}. Copy the link and send it manually.`;
+        }
+        document.getElementById('successBox').classList.add('show');
+        toast('Quote link created', 'success');
+      } catch (err) {
+        toast(err.message, 'error', 6000);
+      } finally {
+        btn.disabled = false;
+        document.getElementById('spinner').classList.remove('show');
+      }
+    }
+
+    function copyLink() {
+      if (!lastLink) return;
+      navigator.clipboard.writeText(lastLink).then(
+        () => toast('Link copied to clipboard', 'success'),
+        () => toast('Could not copy — select the link manually', 'error')
+      );
+    }
+
+    function resetForm() {
+      ['inv-name', 'inv-email', 'inv-address', 'inv-project-type', 'inv-note'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('successBox').classList.remove('show');
+      document.getElementById('inv-name').focus();
+    }
+  </script>
+</body>
+
+</html>

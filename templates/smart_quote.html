@@ -1,0 +1,1945 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Get Your Fee Estimate — Concept Engineers</title>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    :root {
+      --brand: #153d2b;
+      --brand-dark: #1d5238;
+      --orange: #e87722;
+      --orange-hover: #d16615;
+      --orange-soft: #fff4ec;
+      --accent: #2f8556;
+      --green: #16a34a;
+      --border: #e2e8f0;
+      --bg: #f0f4f8;
+      --text: #1a202c;
+      --muted: #718096;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column
+    }
+
+    header {
+      background: var(--brand);
+      color: white;
+      padding: 0 24px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, .25);
+      flex-shrink: 0
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: white
+    }
+
+    .logo-mark {
+      width: 34px;
+      height: 34px;
+      background: rgba(255, 255, 255, .12);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: -1px;
+      flex-shrink: 0
+    }
+
+    .logo h1 {
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -.3px;
+      white-space: nowrap
+    }
+
+    .header-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 16px
+    }
+
+    .header-contact {
+      font-size: 12px;
+      color: rgba(255, 255, 255, .65);
+      display: flex;
+      align-items: center;
+      gap: 5px
+    }
+
+    .header-contact svg {
+      width: 13px;
+      height: 13px;
+      opacity: .6
+    }
+
+    .header-tagline {
+      font-size: 11px;
+      background: rgba(255, 255, 255, .1);
+      border: 1px solid rgba(255, 255, 255, .15);
+      padding: 3px 10px;
+      border-radius: 20px;
+      color: rgba(255, 255, 255, .65);
+      white-space: nowrap
+    }
+
+    .shell {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 32px 16px 80px;
+      flex: 1;
+      width: 100%
+    }
+
+    .page-intro {
+      margin-bottom: 20px
+    }
+
+    .page-intro h2 {
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--brand);
+      letter-spacing: -.3px
+    }
+
+    .page-intro p {
+      font-size: 13px;
+      color: var(--muted);
+      margin-top: 3px
+    }
+
+    /* Loom video helper — stays visible across every step so clients can
+       get a quick explainer while choosing their scope. */
+    .loom-trigger {
+      margin-top: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      border: 1px solid var(--border);
+      color: var(--brand);
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 24px;
+      cursor: pointer;
+      transition: border-color .2s, box-shadow .2s
+    }
+
+    .loom-trigger:hover {
+      border-color: var(--orange);
+      box-shadow: 0 4px 14px rgba(232, 119, 34, .14)
+    }
+
+    .loom-trigger .play-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--orange);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0
+    }
+
+    .loom-trigger .play-dot svg {
+      width: 9px;
+      height: 9px;
+      fill: white;
+      margin-left: 1px
+    }
+
+    .loom-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, .6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 24px
+    }
+
+    .loom-modal.open {
+      display: flex
+    }
+
+    .loom-modal-box {
+      width: 100%;
+      max-width: 720px;
+      background: white;
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, .35);
+      position: relative
+    }
+
+    .loom-modal-close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, .55);
+      color: white;
+      border: none;
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .loom-modal-box iframe {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border: none;
+      display: block
+    }
+
+    .progress-wrap {
+      margin-bottom: 22px
+    }
+
+    .progress-track {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 7px
+    }
+
+    .progress-seg {
+      flex: 1;
+      height: 5px;
+      background: #e2e8f0;
+      border-radius: 3px;
+      transition: background .3s
+    }
+
+    .progress-seg.done {
+      background: var(--orange)
+    }
+
+    .progress-seg.active {
+      background: var(--brand)
+    }
+
+    .progress-label {
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between
+    }
+
+    .price-hero {
+      background: var(--brand);
+      border-radius: 10px;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      gap: 12px
+    }
+
+    .ph-label {
+      font-size: 10px;
+      color: rgba(255, 255, 255, .55);
+      text-transform: uppercase;
+      letter-spacing: .8px;
+      margin-bottom: 4px
+    }
+
+    .ph-range {
+      font-size: 26px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -.5px;
+      line-height: 1
+    }
+
+    .ph-sub {
+      font-size: 11px;
+      color: rgba(255, 255, 255, .5);
+      margin-top: 3px
+    }
+
+    .ph-right {
+      text-align: right;
+      flex-shrink: 0
+    }
+
+    .ph-step {
+      font-size: 10px;
+      color: rgba(255, 255, 255, .45)
+    }
+
+    .ph-name {
+      font-size: 13px;
+      color: rgba(255, 255, 255, .75);
+      font-weight: 500;
+      margin-top: 2px
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      margin-bottom: 20px;
+      overflow: hidden
+    }
+
+    .card-head {
+      background: #f7f9fc;
+      border-bottom: 1px solid var(--border);
+      padding: 13px 20px;
+      font-weight: 700;
+      font-size: 13px;
+      color: var(--brand);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .card-head svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      color: var(--orange)
+    }
+
+    .card-body {
+      padding: 20px
+    }
+
+    .card-hint {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 16px;
+      line-height: 1.5
+    }
+
+    .option-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px
+    }
+
+    .option-tile {
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 14px 16px;
+      cursor: pointer;
+      transition: border-color .15s, background .15s;
+      background: white;
+      user-select: none
+    }
+
+    .option-tile:hover {
+      border-color: var(--orange);
+      background: var(--orange-soft)
+    }
+
+    .option-tile.selected {
+      border-color: var(--orange);
+      background: var(--orange-soft)
+    }
+
+    .ot-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: #f0f4f8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px
+    }
+
+    .ot-icon svg {
+      width: 18px;
+      height: 18px;
+      color: var(--brand)
+    }
+
+    .option-tile.selected .ot-icon {
+      background: rgba(232, 119, 34, .12)
+    }
+
+    .option-tile.selected .ot-icon svg {
+      color: var(--orange)
+    }
+
+    .ot-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 3px
+    }
+
+    .ot-sub {
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.4
+    }
+
+    .ot-price {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--orange);
+      margin-top: 6px
+    }
+
+    .ot-badge {
+      display: inline-block;
+      margin-top: 7px;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: .3px
+    }
+
+    .badge-recommended {
+      background: #fff4ec;
+      color: #b45309
+    }
+
+    .badge-popular {
+      background: #eaf5ef;
+      color: #1d5238
+    }
+
+    .badge-value {
+      background: #f0fdf4;
+      color: #166534
+    }
+
+    .badge-complete {
+      background: #ecefec;
+      color: #1a1a1a
+    }
+
+    .badge-included {
+      background: #ecfdf5;
+      color: #065f46
+    }
+
+    .tag-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px
+    }
+
+    .tag-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 14px;
+      border: 1.5px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+      color: #4a5568;
+      background: white;
+      transition: border-color .15s, background .15s;
+      user-select: none
+    }
+
+    .tag-item input[type=checkbox] {
+      accent-color: var(--orange);
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0
+    }
+
+    .tag-item:has(input:checked) {
+      border-color: var(--orange);
+      background: var(--orange-soft);
+      color: var(--brand)
+    }
+
+    .tag-price {
+      font-size: 11px;
+      color: #a0aec0;
+      font-weight: 400;
+      margin-left: 2px
+    }
+
+    .tag-item:has(input:checked) .tag-price {
+      color: var(--orange)
+    }
+
+    .compare-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-bottom: 16px
+    }
+
+    .compare-table thead tr {
+      background: var(--brand);
+      color: white
+    }
+
+    .compare-table thead th {
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .4px
+    }
+
+    .compare-table tbody tr {
+      border-bottom: 1px solid var(--border)
+    }
+
+    .compare-table tbody tr:last-child {
+      border-bottom: none
+    }
+
+    .compare-table tbody td {
+      padding: 10px 14px;
+      color: #2d3748
+    }
+
+    .compare-table tbody tr:nth-child(even) td {
+      background: #f7f9fc
+    }
+
+    .ce-val {
+      color: var(--orange);
+      font-weight: 700
+    }
+
+    .market-val {
+      color: var(--muted);
+      text-decoration: line-through
+    }
+
+    .summary-list {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 16px
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px
+    }
+
+    .summary-row:last-child {
+      border-bottom: none;
+      background: #f7f9fc
+    }
+
+    .sr-key {
+      color: var(--muted);
+      font-weight: 500
+    }
+
+    .sr-val {
+      color: var(--text);
+      font-weight: 500;
+      text-align: right;
+      max-width: 60%
+    }
+
+    .summary-row.total .sr-key {
+      font-weight: 700;
+      color: var(--brand);
+      font-size: 14px
+    }
+
+    .summary-row.total .sr-val {
+      font-weight: 800;
+      color: var(--orange);
+      font-size: 15px
+    }
+
+    .tier-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 20px
+    }
+
+    .tier-card {
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all .15s;
+      background: white;
+      user-select: none
+    }
+
+    .tier-card:hover {
+      border-color: var(--orange);
+      background: var(--orange-soft)
+    }
+
+    .tier-card.selected {
+      border-color: var(--orange);
+      background: var(--orange-soft)
+    }
+
+    .tier-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--brand);
+      margin-bottom: 4px
+    }
+
+    .tier-sub {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-bottom: 8px
+    }
+
+    .tier-price-adj {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--orange)
+    }
+
+    .grid2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 4px
+    }
+
+    label .opt {
+      font-weight: 400;
+      color: #a0aec0
+    }
+
+    input[type=text],
+    input[type=email],
+    input[type=tel],
+    textarea {
+      width: 100%;
+      padding: 9px 11px;
+      border: 1.5px solid #cbd5e0;
+      border-radius: 6px;
+      font-size: 13.5px;
+      color: #2d3748;
+      background: white;
+      transition: border-color .15s
+    }
+
+    input:focus,
+    textarea:focus {
+      outline: none;
+      border-color: var(--orange);
+      box-shadow: 0 0 0 3px rgba(232, 119, 34, .1)
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px
+    }
+
+    .btn-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap
+    }
+
+    .btn-primary {
+      background: var(--orange);
+      color: white;
+      border: none;
+      border-radius: 7px;
+      padding: 12px 26px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: background .15s;
+      white-space: nowrap
+    }
+
+    .btn-primary:hover {
+      background: var(--orange-hover)
+    }
+
+    .btn-primary:disabled {
+      background: #a0aec0;
+      cursor: not-allowed
+    }
+
+    .btn-primary svg {
+      width: 16px;
+      height: 16px
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #4a5568;
+      border: 1.5px solid #cbd5e0;
+      border-radius: 7px;
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .15s;
+      white-space: nowrap
+    }
+
+    .btn-secondary:hover {
+      background: #f7f9fc;
+      border-color: var(--brand);
+      color: var(--brand)
+    }
+
+    .sig-tabs {
+      display: flex;
+      border-bottom: 2px solid var(--border);
+      margin-bottom: 18px
+    }
+
+    .sig-tab {
+      flex: 1;
+      padding: 10px 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--muted);
+      background: none;
+      border: none;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      transition: all .15s;
+      text-align: center
+    }
+
+    .sig-tab.active {
+      color: var(--brand);
+      border-bottom-color: var(--orange)
+    }
+
+    .sig-tab:hover:not(.active) {
+      color: var(--brand);
+      background: #f7f9fc
+    }
+
+    .sig-canvas-wrap {
+      background: #fafbfc;
+      border: 1.5px dashed #cbd5e0;
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      touch-action: none
+    }
+
+    .sig-canvas-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #a0aec0;
+      font-size: 13px;
+      pointer-events: none;
+      user-select: none
+    }
+
+    canvas#sigCanvas {
+      display: block;
+      width: 100%;
+      height: 160px;
+      cursor: crosshair
+    }
+
+    .sig-type-preview {
+      font-size: 32px;
+      font-family: "Dancing Script", "Segoe Script", cursive, serif;
+      color: var(--brand);
+      padding: 24px 16px;
+      text-align: center;
+      min-height: 90px;
+      word-break: break-word;
+      border: 1.5px dashed #cbd5e0;
+      border-radius: 8px;
+      background: #fafbfc
+    }
+
+    .sig-upload-area {
+      border: 1.5px dashed #cbd5e0;
+      border-radius: 8px;
+      padding: 32px 20px;
+      text-align: center;
+      cursor: pointer;
+      background: #fafbfc;
+      transition: border-color .15s
+    }
+
+    .sig-upload-area:hover {
+      border-color: var(--orange);
+      background: var(--orange-soft)
+    }
+
+    .sig-upload-area svg {
+      width: 28px;
+      height: 28px;
+      color: #a0aec0;
+      margin-bottom: 8px
+    }
+
+    .sig-upload-area p {
+      font-size: 13px;
+      color: var(--muted)
+    }
+
+    .sig-upload-area p strong {
+      color: var(--orange)
+    }
+
+    #sigUploadPreview {
+      max-width: 100%;
+      max-height: 120px;
+      margin-top: 12px;
+      display: none;
+      border-radius: 4px
+    }
+
+    .canvas-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 8px
+    }
+
+    .btn-clear {
+      font-size: 12px;
+      color: #718096;
+      background: none;
+      border: 1px solid #e2e8f0;
+      border-radius: 5px;
+      padding: 5px 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      transition: all .15s
+    }
+
+    .btn-clear span {
+      padding-top: 4px;
+    }
+
+    .btn-clear:hover {
+      border-color: #e53e3e;
+      color: #e53e3e
+    }
+
+    .btn-clear svg {
+      width: 13px;
+      height: 13px
+    }
+
+    .confirm-screen {
+      text-align: center;
+      padding: 48px 24px
+    }
+
+    .confirm-icon {
+      width: 72px;
+      height: 72px;
+      background: #f0fdf4;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px
+    }
+
+    .confirm-icon svg {
+      width: 36px;
+      height: 36px;
+      color: var(--green)
+    }
+
+    .confirm-screen h2 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--brand);
+      margin-bottom: 10px;
+      letter-spacing: -.4px
+    }
+
+    .confirm-screen p {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 420px;
+      margin: 0 auto 24px
+    }
+
+    .confirm-ref {
+      font-size: 13px;
+      background: #f7f9fc;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 16px;
+      display: inline-block;
+      font-weight: 600;
+      color: var(--brand);
+      margin-bottom: 20px
+    }
+
+    .next-steps {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 24px;
+      text-align: left;
+      max-width: 440px;
+      margin: 0 auto
+    }
+
+    .next-steps h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--brand);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: .5px
+    }
+
+    .next-step-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      font-size: 13px;
+      color: #4a5568
+    }
+
+    .next-step-item:last-child {
+      margin-bottom: 0
+    }
+
+    .ns-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--orange);
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px
+    }
+
+    .spinner {
+      display: none;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 13px
+    }
+
+    .spinner.show {
+      display: flex
+    }
+
+    .spin-ring {
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid #e2e8f0;
+      border-top-color: var(--orange);
+      border-radius: 50%;
+      animation: spin .7s linear infinite
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(16px);
+      background: var(--brand);
+      color: white;
+      padding: 12px 22px;
+      border-radius: 8px;
+      font-size: 13.5px;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity .3s, transform .3s;
+      pointer-events: none;
+      z-index: 999;
+      max-width: 90vw;
+      text-align: center;
+      white-space: nowrap
+    }
+
+    .toast.success {
+      background: #276749
+    }
+
+    .toast.error {
+      background: #9b2c2c
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0)
+    }
+
+    footer {
+      background: white;
+      border-top: 1px solid var(--border);
+      padding: 16px 24px;
+      text-align: center;
+      font-size: 12px;
+      color: var(--muted);
+      flex-shrink: 0
+    }
+
+    .trust-badges {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 8px
+    }
+
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 500;
+      color: #4a5568
+    }
+
+    .trust-badge svg {
+      width: 13px;
+      height: 13px;
+      color: var(--green)
+    }
+
+    @media(max-width:640px) {
+      .price-hero {
+        flex-direction: column;
+        gap: 8px
+      }
+
+      .ph-right {
+        text-align: left
+      }
+
+      .option-grid {
+        grid-template-columns: 1fr
+      }
+
+      .tier-grid {
+        grid-template-columns: 1fr
+      }
+
+      .grid2 {
+        grid-template-columns: 1fr
+      }
+
+      .btn-row {
+        flex-direction: column;
+        align-items: stretch
+      }
+
+      .btn-primary,
+      .btn-secondary {
+        text-align: center;
+        justify-content: center
+      }
+
+      header {
+        padding: 0 14px
+      }
+
+      .header-contact {
+        display: none
+      }
+
+      .shell {
+        padding: 20px 12px 60px
+      }
+    }
+
+    @media(max-width:480px) {
+      .header-tagline {
+        display: none
+      }
+
+      .ph-range {
+        font-size: 22px
+      }
+    }
+  </style>
+</head>
+
+<body data-valid="{{ 'true' if valid else 'false' }}" data-token="{{ token or '' }}" data-name="{{ client_name or '' }}"
+  data-email="{{ client_email or '' }}" data-address="{{ project_address or '' }}"
+  data-project-type="{{ project_type or '' }}">
+
+  <header>
+    <a href="/" class="logo">
+      <div class="logo-mark">CE</div>
+      <h1>Concept Engineers</h1>
+    </a>
+    <div class="header-right">
+      <div class="header-contact">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path
+            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.7 19.79 19.79 0 0 1 1.58 5.08 2 2 0 0 1 3.55 3h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 10.1a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21.73 17z" />
+        </svg>
+        07 0000 0000
+      </div>
+      <div class="header-tagline">Free quote · No obligation</div>
+    </div>
+  </header>
+
+  <div class="shell">
+
+    {% if not valid %}
+    <div class="card" style="margin-top:24px">
+      <div class="confirm-screen">
+        <div class="confirm-icon" style="background:#fff5f5">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#e53e3e" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <line x1="15" y1="9" x2="9" y2="15" />
+            <line x1="9" y1="9" x2="15" y2="15" />
+          </svg>
+        </div>
+        <h2>This link isn't available</h2>
+        <p>{{ reason }}</p>
+        <p style="font-size:13px">Need a new link? Contact us at <a href="mailto:admin@conceptengineers.com.au "
+            style="color:var(--orange);font-weight:600">admin@conceptengineers.com.au </a> or call 07 0000 0000.</p>
+      </div>
+    </div>
+    {% else %}
+
+    <div class="page-intro">
+      <h2>Welcome{{ ', ' + client_name if client_name else '' }} — build your quote estimate</h2>
+      <p>Answer a few questions — your indicative price updates live as you go.</p>
+      <button type="button" class="loom-trigger" onclick="document.getElementById('loomModal').classList.add('open')">
+        <span class="play-dot">
+          <svg viewBox="0 0 24 24">
+            <polygon points="6 4 20 12 6 20 6 4" />
+          </svg>
+        </span>
+        Watch a quick walkthrough
+      </button>
+    </div>
+
+    <div class="loom-modal" id="loomModal" onclick="if(event.target===this) this.classList.remove('open')">
+      <div class="loom-modal-box">
+        <button type="button" class="loom-modal-close"
+          onclick="document.getElementById('loomModal').classList.remove('open')">&times;</button>
+        <iframe src="https://www.loom.com/embed/89b4818c145e464fb4a8acda54b5cd53" allowfullscreen></iframe>
+      </div>
+    </div>
+
+    <div class="progress-wrap">
+      <div class="progress-track" id="progressTrack"></div>
+      <div class="progress-label">
+        <span id="progressStepLabel">Step 1 of 6</span>
+        <span id="progressPctLabel">0% complete</span>
+      </div>
+    </div>
+
+    <div class="price-hero" id="priceHero">
+      <div>
+        <div class="ph-label">Your indicative fee (ex GST)</div>
+        <div class="ph-range" id="heroRange">Select services to begin</div>
+        <div class="ph-sub">Updates automatically as you choose</div>
+      </div>
+      <div class="ph-right">
+        <div class="ph-step" id="heroStepLabel">Step 1 of 6</div>
+        <div class="ph-name" id="heroStepName">Services</div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <div id="stepContainer"></div>
+
+    {% endif %}
+
+  </div>
+
+  <footer>
+    <div class="trust-badges">
+      <div class="trust-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+        Registered Engineers
+      </div>
+      <div class="trust-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+        Professional Indemnity Insured
+      </div>
+      <div class="trust-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+        Queensland-based Team
+      </div>
+      <div class="trust-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+          <polyline points="22 4 12 14.01 9 11.01" />
+        </svg>
+        No-obligation quote
+      </div>
+    </div>
+    <div>&copy; 2026 Concept Engineers · <a href="https://conceptengineers.com.au"
+        style="color:inherit">conceptengineers.com.au</a></div>
+  </footer>
+
+  <script>
+    /* DATA */
+    const TOTAL_STEPS = 5;
+
+    const SCOPES = [
+      { id: 'da', label: 'DA Submission', sub: 'Civil engineering package for Development Approval lodgement', base: 7200, badge: 'popular', badgeText: 'Most common' },
+      { id: 'dd', label: 'Detailed Design', sub: 'Full construction documentation set — ready for council sign-off', base: 9500, badge: 'popular', badgeText: 'Popular' },
+      { id: 'uu', label: 'UU Endorsed Works Only', sub: 'Urban Utilities design, lodgement and endorsement', base: 8700, badge: 'popular', badgeText: 'Popular' },
+      { id: 'full', label: 'Full Civil Package', sub: 'DA + Detailed Design — all in one scope', base: 14200, badge: 'complete', badgeText: 'Best value' },
+      { id: 'uw_only', label: 'UW Design & Certifier Works Only', sub: 'Unregistered Works design and certification only — no DA or UU lodgement included', base: 4200, badge: 'popular', badgeText: 'Popular' },
+    ];
+
+    const SIZES = [
+      { id: 'small', label: '1–2 lots', sub: 'Infill or duplex development', adj: -1000 },
+      { id: 'medium', label: '3–10 lots', sub: 'Small residential subdivision', adj: 0 },
+      { id: 'large', label: '11–30 lots', sub: 'Medium estate or strata development', adj: 2200 },
+      { id: 'xlarge', label: '30+ lots', sub: 'Master-planned or large estate', adj: 4800 },
+    ];
+
+    const PROJECT_TYPES = [
+      { id: 'residential', label: 'Residential Subdivision', sub: 'Lot subdivision or infill development' },
+      { id: 'commercial', label: 'Commercial', sub: 'Retail, office or mixed-use development' },
+      { id: 'industrial', label: 'Industrial', sub: 'Warehousing, manufacturing or industrial estate' },
+      { id: 'service_station', label: 'Service Station', sub: 'Fuel or service station development' },
+    ];
+
+    const EXTRAS = [
+      { id: 'drains_opt', label: 'DRAINS Modelling (Optimisation)', sub: 'Optimised hydraulic modelling for detention design', adj: 750 },
+      { id: 'drains_base', label: 'DRAINS Modelling (Basic)', sub: 'Base-case DRAINS hydraulic model', adj: 550 },
+      { id: 'uw', label: 'Detailed design only', sub: 'Detailed design only', adj: 950 },
+      { id: 'fast', label: 'Priority turnaround', sub: 'Expedited delivery — 50% faster', adj: 900 },
+      { id: 'esd', label: 'ESD / WSUD reporting', sub: 'Sustainability & water-sensitive design', adj: 600 },
+      { id: 'earthworks_3d', label: '3D Modelling (Earthworks Volumes)', sub: 'Cut/fill volume modelling and earthworks balance', adj: 700 },
+      { id: 'construction_cost', label: 'Probable Construction Cost Estimate', sub: 'Indicative construction cost estimate for the works', adj: 500 },
+      // Follow-on phases — only shown when Detailed Design is part of the scope
+      { id: 'construction', label: 'Construction Phase Services', sub: 'Site inspections, RFI responses and hold-point certification during the build', adj: 2200 },
+      { id: 'as_constructed', label: 'As-Constructed Phase', sub: 'As-built documentation & certification for council / UU acceptance', adj: 950 },
+    ];
+
+    const TIERS = [
+      { id: 'bronze', label: 'Bronze', sub: 'Compliant, cost-effective delivery', priceAdj: 0, badge: 'value', badgeText: 'Budget-friendly' },
+      { id: 'silver', label: 'Silver', sub: 'Faster approvals, priority liaison', priceAdj: 900, badge: 'popular', badgeText: 'Popular' },
+      { id: 'gold', label: 'Gold', sub: 'Dedicated engineer, all liaison included', priceAdj: 2200, badge: 'recommended', badgeText: 'Recommended' },
+      { id: 'platinum', label: 'Platinum', sub: 'White-glove service, dedicated PM, fastest turnaround', priceAdj: 3800, badge: 'complete', badgeText: 'Premium' },
+    ];
+
+    const STEP_NAMES = ['Services', 'Project size', 'Optional add-ons', 'Service level', 'Quote summary & Sign'];
+
+    /* INVITE (injected by server via data-* attributes on the body tag) —
+       this already carries the client's name/email/address from the signing
+       link, so there's no separate "tell us about yourself" step needed. */
+    const INVITE = {
+      valid: document.body.dataset.valid === 'true',
+      token: document.body.dataset.token || '',
+      name: document.body.dataset.name || '',
+      email: document.body.dataset.email || '',
+      address: document.body.dataset.address || '',
+      projectType: document.body.dataset.projectType || '',
+    };
+
+    /* STATE */
+    const state = {
+      step: 0, scope: '', size: 'medium', extras: [], tier: 'gold',
+      name: INVITE.name, email: INVITE.email, phone: '', address: INVITE.address, company: '',
+      // Staff can pre-select the project type when sending the invite link
+      // (e.g. "Industrial") so the client doesn't have to pick it themselves.
+      projectType: INVITE.projectType || 'residential', lotCount: '', roadCount: '', roadLength: '',
+      externalRoadworks: '', trunkInfrastructure: '',
+    };
+
+    /* HELPERS */
+    function fmt(n) { return '$' + Math.round(n).toLocaleString('en-AU'); }
+
+    function getPrice() {
+      if (!state.scope) return null;
+      const s = SCOPES.find(x => x.id === state.scope);
+      const sz = SIZES.find(x => x.id === state.size) || { adj: 0 };
+      const t = TIERS.find(x => x.id === state.tier) || { priceAdj: 0 };
+      const extAdj = state.extras.reduce((sum, id) => {
+        const e = EXTRAS.find(x => x.id === id); return sum + (e ? e.adj : 0);
+      }, 0);
+      const mid = (s?.base || 7200) + sz.adj + t.priceAdj + extAdj;
+      return { low: Math.round(mid * 0.92), high: Math.round(mid * 1.10), mid: Math.round(mid) };
+    }
+
+    function toast(msg, type = 'success', dur = 4000) {
+      const el = document.getElementById('toast');
+      el.textContent = msg; el.className = `toast ${type} show`;
+      clearTimeout(el._t); el._t = setTimeout(() => el.className = 'toast', dur);
+    }
+
+    /* PROGRESS */
+    function renderProgress() {
+      document.getElementById('progressTrack').innerHTML =
+        Array.from({ length: TOTAL_STEPS }, (_, i) =>
+          `<div class="progress-seg ${i < state.step ? 'done' : i === state.step ? 'active' : ''}"></div>`
+        ).join('');
+      document.getElementById('progressStepLabel').textContent = `Step ${state.step + 1} of ${TOTAL_STEPS}`;
+      document.getElementById('progressPctLabel').textContent = `${Math.round((state.step / TOTAL_STEPS) * 100)}% complete`;
+    }
+
+    function updateHero() {
+      const p = getPrice();
+      document.getElementById('heroRange').textContent = p ? `${fmt(p.low)} – ${fmt(p.high)}` : 'Select services to begin';
+      document.getElementById('heroStepLabel').textContent = `Step ${state.step + 1} of ${TOTAL_STEPS}`;
+      document.getElementById('heroStepName').textContent = STEP_NAMES[state.step];
+    }
+
+    /* RENDER */
+    function render() {
+      renderProgress(); updateHero();
+      const builders = [step0, step1, step2, step3, step4];
+      document.getElementById('stepContainer').innerHTML = builders[state.step]();
+      bindEvents();
+    }
+
+    function nav(delta) {
+      state.step = Math.max(0, Math.min(TOTAL_STEPS - 1, state.step + delta));
+      render(); window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* STEP 0: Services */
+    function step0() {
+      return `<div class="card">
+  <div class="card-head">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+    What services do you need?
+  </div>
+  <div class="card-body">
+    <p class="card-hint">Choose the engineering scope that matches your project. Not sure? Pick DA Submission — our team will confirm the full scope after reviewing your site.</p>
+    <div class="option-grid">
+      ${SCOPES.map(s => `
+      <div class="option-tile ${state.scope === s.id ? 'selected' : ''}" data-scope="${s.id}">
+        <div class="ot-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <div class="ot-title">${s.label}</div>
+        <div class="ot-sub">${s.sub}</div>
+        <span class="ot-badge badge-${s.badge}">${s.badgeText}</span>
+      </div>`).join('')}
+    </div>
+    <div class="btn-row">
+      <button class="btn-primary" id="btnNext">
+        Continue — Project size
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>`;
+    }
+
+    /* STEP 1: Size */
+    function step1() {
+      const isSubdivision = state.projectType === 'residential';
+      return `<div class="card">
+  <div class="card-head">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+    How large is your project?
+  </div>
+  <div class="card-body">
+    <p class="card-hint">First, what type of project is this?</p>
+    <div class="option-grid">
+      ${PROJECT_TYPES.map(t => `
+      <div class="option-tile ${state.projectType === t.id ? 'selected' : ''}" data-ptype="${t.id}">
+        <div class="ot-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <div class="ot-title">${t.label}</div>
+        <div class="ot-sub">${t.sub}</div>
+      </div>`).join('')}
+    </div>
+
+    ${isSubdivision ? `
+    <p class="card-hint" style="margin-top:20px">Project complexity scales with site size. Select the range that best describes your development.</p>
+    <div class="option-grid">
+      ${SIZES.map(s => `
+      <div class="option-tile ${state.size === s.id ? 'selected' : ''}" data-size="${s.id}">
+        <div class="ot-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        </div>
+        <div class="ot-title">${s.label}</div>
+        <div class="ot-sub">${s.sub}</div>
+      </div>`).join('')}
+    </div>
+
+    <div class="grid2" style="margin-bottom:16px">
+      <div>
+        <label>How many lots? <span class="opt">(exact number, optional)</span></label>
+        <input type="text" id="f-lotcount" placeholder="e.g. 6" value="${esc(state.lotCount)}">
+      </div>
+      <div>
+        <label>How many roads?</label>
+        <input type="text" id="f-roadcount" placeholder="e.g. 2" value="${esc(state.roadCount)}">
+      </div>
+    </div>
+    <div style="margin-bottom:16px">
+      <label>Roughly, how long is the road? <span class="opt">(metres)</span></label>
+      <input type="text" id="f-roadlength" placeholder="e.g. 150m" value="${esc(state.roadLength)}">
+    </div>` : ''}
+
+    ${ynQuestion('externalRoadworks', 'Is external roadworks to the council or TMR road required?', state.externalRoadworks)}
+    ${ynQuestion('trunkInfrastructure', 'Is there any trunk infrastructure required to be built as part of your development?', state.trunkInfrastructure)}
+
+    <div class="btn-row">
+      <button class="btn-secondary" id="btnBack">← Back</button>
+      <button class="btn-primary" id="btnNext">
+        Continue — Add-ons
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>`;
+    }
+
+    /* STEP 2: Extras */
+    function step2() {
+      const visibleExtras = EXTRAS.filter(e =>
+        (e.id === 'construction' || e.id === 'as_constructed')
+          ? (state.scope === 'dd' || state.scope === 'full')
+          : true
+      );
+      return `<div class="card">
+  <div class="card-head">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    Any optional add-ons?
+  </div>
+  <div class="card-body">
+    <p class="card-hint">Tick any additional services you'd like included. Each adds to your estimate and is fixed in the final proposal.</p>
+    <div class="tag-grid">
+      ${visibleExtras.map(e => `
+      <label class="tag-item">
+        <input type="checkbox" data-extra="${e.id}" ${state.extras.includes(e.id) ? 'checked' : ''}>
+        ${e.label}
+        <span class="tag-price">+${fmt(e.adj)}</span>
+      </label>`).join('')}
+    </div>
+    <div class="btn-row">
+      <button class="btn-secondary" id="btnBack">← Back</button>
+      <button class="btn-primary" id="btnNext">
+        Continue — Service level
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>`;
+    }
+
+    /* STEP 3: Tier + market comparison */
+    function step3() {
+      const p = getPrice() || { low: 0, high: 0 };
+      const selectedExtras = state.extras.map(id => EXTRAS.find(e => e.id === id)).filter(Boolean);
+      return `<div class="card">
+  <div class="card-head">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+    How does our fee compare?
+  </div>
+  <div class="card-body">
+    <p class="card-hint">Here's how Concept Engineers stacks up against typical Queensland market rates for civil engineering.</p>
+
+    ${selectedExtras.length ? `
+    <div class="summary-list" style="margin-bottom:22px">
+      <div class="summary-row" style="background:#f7f9fc">
+        <span class="sr-key" style="font-weight:700;color:var(--brand)">Your selected add-ons</span><span class="sr-val"></span>
+      </div>
+      ${selectedExtras.map(e => `
+      <div class="summary-row"><span class="sr-key">${e.label}</span><span class="sr-val">+${fmt(e.adj)}</span></div>`).join('')}
+    </div>` : ''}
+
+    <table class="compare-table" style="margin-bottom:22px">
+      <thead><tr><th>Service</th><th>Typical market</th><th>Your CE quote</th></tr></thead>
+      <tbody>
+        <tr><td>DA civil package</td><td class="market-val">$9k – $13k</td><td class="ce-val">${fmt(p.low)} – ${fmt(p.high)}</td></tr>
+        <tr><td>Detailed design add-on</td><td class="market-val">+$4k – $7k</td><td class="ce-val">From $1,400</td></tr>
+        <tr><td>Authority turnaround</td><td class="market-val">8 – 14 weeks</td><td class="ce-val">4 – 6 weeks</td></tr>
+        <tr><td>Minor amendments</td><td class="market-val">Charged extra</td><td class="ce-val"><span class="ot-badge badge-included">Included</span></td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:12px;font-weight:700;color:#4a5568;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">Choose your service level</p>
+    <div class="tier-grid">
+      ${TIERS.map(t => `
+      <div class="tier-card ${state.tier === t.id ? 'selected' : ''}" data-tier="${t.id}">
+        <div class="tier-name">${t.label}</div>
+        <div class="tier-sub">${t.sub}</div>
+        ${t.priceAdj > 0 ? `<div class="tier-price-adj">+${fmt(t.priceAdj)}</div>` : '<div class="tier-price-adj" style="color:#16a34a">Base price</div>'}
+        <span class="ot-badge badge-${t.badge}" style="margin-top:8px">${t.badgeText}</span>
+      </div>`).join('')}
+    </div>
+    <div class="btn-row">
+      <button class="btn-secondary" id="btnBack">← Back</button>
+      <button class="btn-primary" id="btnNext">
+        Continue — Quote summary
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+  </div>
+</div>`;
+    }
+
+    /* STEP 4: Quote summary (standalone) — uses name/email/address from INVITE */
+    function step4() {
+      const p = getPrice() || { low: 0, high: 0, mid: 0 };
+      const scopeLabel = SCOPES.find(x => x.id === state.scope)?.label || 'Not selected';
+      const sizeLabel = SIZES.find(x => x.id === state.size)?.label || '—';
+      const tierLabel = TIERS.find(x => x.id === state.tier)?.label || '—';
+      const extrasText = state.extras.map(id => EXTRAS.find(e => e.id === id)?.label).filter(Boolean).join(', ') || 'None';
+      return `
+<div class="card" style="margin-bottom:16px">
+  <div class="card-head">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+    Your quote summary
+  </div>
+  <div class="card-body">
+    <div class="summary-list">
+      <div class="summary-row"><span class="sr-key">Services</span><span class="sr-val">${scopeLabel}</span></div>
+      <div class="summary-row"><span class="sr-key">Project size</span><span class="sr-val">${sizeLabel}</span></div>
+      <div class="summary-row"><span class="sr-key">Service level</span><span class="sr-val">${tierLabel}</span></div>
+      <div class="summary-row"><span class="sr-key">Add-ons</span><span class="sr-val">${extrasText}</span></div>
+      <div class="summary-row"><span class="sr-key">Name</span><span class="sr-val">${esc(state.name)}</span></div>
+      <div class="summary-row"><span class="sr-key">Email</span><span class="sr-val">${esc(state.email)}</span></div>
+      <div class="summary-row"><span class="sr-key">Project address</span><span class="sr-val">${esc(state.address)}</span></div>
+      <div class="summary-row total">
+        <span class="sr-key">Total estimate (ex GST)</span>
+        <span class="sr-val">${fmt(p.low)} – ${fmt(p.high)}</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg>
+    Sign to confirm your proposal
+  </div>
+  <div class="card-body">
+    <p class="card-hint">Please confirm your acceptance of this quote to enable us to formalise our Site Review &amp; Fee Proposal.</p>
+
+    <div class="sig-tabs" id="sigTabs">
+      <button class="sig-tab active" data-tab="draw">Draw</button>
+      <button class="sig-tab" data-tab="type">Type</button>
+      <button class="sig-tab" data-tab="upload">Upload</button>
+    </div>
+
+    <!-- Draw -->
+    <div id="tabDraw">
+      <div class="sig-canvas-wrap" id="sigWrap">
+        <div class="sig-canvas-placeholder" id="sigPlaceholder">Draw your signature here</div>
+        <canvas id="sigCanvas"></canvas>
+      </div>
+      <div class="canvas-actions">
+        <button type="button" class="btn-clear" onclick="clearCanvas()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+          </svg>
+          <span>Clear</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Type -->
+    <div id="tabType" style="display:none">
+      <input type="text" id="sigTypeInput" placeholder="Type your full name" oninput="updateTypePreview(this.value)" style="margin-bottom:10px">
+      <div class="sig-type-preview" id="sigTypePreview">Your signature will appear here</div>
+    </div>
+
+    <!-- Upload -->
+    <div id="tabUpload" style="display:none">
+      <div class="sig-upload-area" onclick="document.getElementById('sigFile').click()" id="sigDropArea">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <p>Click to upload your signature image<br><strong>or drag and drop here</strong></p>
+        <img id="sigUploadPreview">
+      </div>
+      <input type="file" id="sigFile" accept="image/*" style="display:none" onchange="handleFileUpload(this)">
+    </div>
+
+    <div style="margin-top:18px">
+      <label>Full name <span style="color:#e53e3e">*</span></label>
+      <input type="text" id="sigName" placeholder="As it appears on the proposal" value="${esc(state.name)}" style="margin-bottom:12px">
+      <label>Project / Site Address <span style="color:#e53e3e">*</span></label>
+      <input type="text" id="sigAddress" placeholder="42 Riverside Drive, Brisbane QLD 4000" value="${esc(state.address)}">
+    </div>
+
+    <p style="font-size:11px;color:#a0aec0;margin-top:14px;line-height:1.6">
+      By submitting this form you agree to Concept Engineers' standard terms of engagement.
+      This indicative quote is not a binding contract — a formal fee proposal will follow
+      after site review. We guarantee our quality and services.
+    </p>
+
+    <div class="btn-row" style="margin-top:16px">
+      <button class="btn-secondary" id="btnBack">← Back</button>
+      <button class="btn-primary" id="submitBtn" onclick="handleSubmit()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Submit &amp; Sign Proposal
+      </button>
+      <div class="spinner" id="spinner"><div class="spin-ring"></div><span>Processing…</span></div>
+    </div>
+  </div>
+</div>`;
+    }
+
+    /* (step5 merged into step4 below) */
+
+    /* BIND EVENTS */
+    function bindEvents() {
+      const on = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('click', fn) };
+      on('btnNext', () => {
+        if (state.step === 0 && !state.scope) { toast('Please select a service', 'error'); return; }
+        if (state.step === 1) {
+          const lc = document.getElementById('f-lotcount');
+          const rc = document.getElementById('f-roadcount');
+          const rl = document.getElementById('f-roadlength');
+          if (lc) state.lotCount = lc.value.trim();
+          if (rc) state.roadCount = rc.value.trim();
+          if (rl) state.roadLength = rl.value.trim();
+        }
+        nav(1);
+      });
+      on('btnBack', () => nav(-1));
+
+      document.querySelectorAll('[data-scope]').forEach(el => el.addEventListener('click', () => {
+        state.scope = el.dataset.scope;
+        // Construction / As-Constructed phases only apply when Detailed Design is in scope
+        if (state.scope !== 'dd' && state.scope !== 'full') {
+          state.extras = state.extras.filter(id => id !== 'construction' && id !== 'as_constructed');
+        }
+        render();
+      }));
+      document.querySelectorAll('[data-ptype]').forEach(el => el.addEventListener('click', () => { state.projectType = el.dataset.ptype; render() }));
+      document.querySelectorAll('[data-size]').forEach(el => el.addEventListener('click', () => { state.size = el.dataset.size; render() }));
+      document.querySelectorAll('[data-tier]').forEach(el => el.addEventListener('click', () => { state.tier = el.dataset.tier; render() }));
+      document.querySelectorAll('[data-extra]').forEach(cb => cb.addEventListener('change', () => {
+        const id = cb.dataset.extra;
+        state.extras = cb.checked ? [...state.extras, id] : state.extras.filter(x => x !== id);
+        updateHero();
+      }));
+      document.querySelectorAll('input[name="externalRoadworks"]').forEach(r => r.addEventListener('change', () => { state.externalRoadworks = r.value; }));
+      document.querySelectorAll('input[name="trunkInfrastructure"]').forEach(r => r.addEventListener('change', () => { state.trunkInfrastructure = r.value; }));
+
+      // Signature tabs
+      document.querySelectorAll('.sig-tab').forEach(btn => btn.addEventListener('click', () => {
+        document.querySelectorAll('.sig-tab').forEach(t => t.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById('tabDraw').style.display = 'none';
+        document.getElementById('tabType').style.display = 'none';
+        document.getElementById('tabUpload').style.display = 'none';
+        document.getElementById('tab' + btn.dataset.tab.charAt(0).toUpperCase() + btn.dataset.tab.slice(1)).style.display = '';
+        if (btn.dataset.tab === 'draw') initCanvas();
+      }));
+
+      if (state.step === 4) initCanvas();
+    }
+
+    /* CANVAS */
+    let drawing = false, lastX = 0, lastY = 0, hasDrawn = false;
+    let canvasCtx = null;
+
+    function initCanvas() {
+      const canvas = document.getElementById('sigCanvas');
+      if (!canvas) return;
+      const wrap = document.getElementById('sigWrap');
+      const W = wrap.clientWidth; const H = 160;
+      canvas.width = W * devicePixelRatio; canvas.height = H * devicePixelRatio;
+      canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
+      canvasCtx = canvas.getContext('2d');
+      canvasCtx.scale(devicePixelRatio, devicePixelRatio);
+      canvasCtx.strokeStyle = '#153d2b'; canvasCtx.lineWidth = 2.5;
+      canvasCtx.lineCap = 'round'; canvasCtx.lineJoin = 'round';
+
+      function pos(e) {
+        const r = canvas.getBoundingClientRect();
+        const src = e.touches ? e.touches[0] : e;
+        return { x: src.clientX - r.left, y: src.clientY - r.top };
+      }
+      function start(e) {
+        e.preventDefault(); drawing = true; const p = pos(e); lastX = p.x; lastY = p.y;
+        document.getElementById('sigPlaceholder').style.display = 'none';
+      }
+      function move(e) {
+        e.preventDefault(); if (!drawing) return; const p = pos(e);
+        canvasCtx.beginPath(); canvasCtx.moveTo(lastX, lastY); canvasCtx.lineTo(p.x, p.y); canvasCtx.stroke();
+        lastX = p.x; lastY = p.y; hasDrawn = true;
+      }
+      function end(e) { e.preventDefault(); drawing = false; }
+
+      canvas.addEventListener('mousedown', start);
+      canvas.addEventListener('mousemove', move);
+      canvas.addEventListener('mouseup', end);
+      canvas.addEventListener('mouseleave', end);
+      canvas.addEventListener('touchstart', start, { passive: false });
+      canvas.addEventListener('touchmove', move, { passive: false });
+      canvas.addEventListener('touchend', end, { passive: false });
+    }
+
+    function clearCanvas() {
+      const canvas = document.getElementById('sigCanvas');
+      if (!canvas || !canvasCtx) return;
+      canvasCtx.clearRect(0, 0, canvas.width, canvas.height);
+      hasDrawn = false;
+      document.getElementById('sigPlaceholder').style.display = '';
+    }
+
+    function updateTypePreview(val) {
+      document.getElementById('sigTypePreview').textContent = val || 'Your signature will appear here';
+    }
+
+    function handleFileUpload(input) {
+      const file = input.files[0]; if (!file) return;
+      const reader = new FileReader();
+      reader.onload = e => {
+        const preview = document.getElementById('sigUploadPreview');
+        preview.src = e.target.result; preview.style.display = 'block';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    /* DRAG-DROP UPLOAD */
+    document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener('dragover', (e) => e.preventDefault());
+      document.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const dropArea = document.getElementById('sigDropArea');
+        if (!dropArea || !e.dataTransfer?.files?.length) return;
+        const file = e.dataTransfer.files[0];
+        if (!file.type.startsWith('image/')) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+          const preview = document.getElementById('sigUploadPreview');
+          if (preview) { preview.src = ev.target.result; preview.style.display = 'block'; }
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+
+    /* SUBMIT */
+    function getSigData() {
+      const activeTab = document.querySelector('.sig-tab.active')?.dataset.tab || 'draw';
+      if (activeTab === 'draw') {
+        const canvas = document.getElementById('sigCanvas');
+        if (!hasDrawn || !canvas) return { type: null, data: null };
+        return { type: 'draw', data: canvas.toDataURL('image/png') };
+      }
+      if (activeTab === 'type') {
+        const val = document.getElementById('sigTypeInput')?.value.trim();
+        return val ? { type: 'type', data: val } : { type: null, data: null };
+      }
+      if (activeTab === 'upload') {
+        const src = document.getElementById('sigUploadPreview')?.src;
+        return (src && src.startsWith('data:')) ? { type: 'draw', data: src } : { type: null, data: null };
+      }
+      return { type: null, data: null };
+    }
+
+    async function handleSubmit() {
+      const sig = getSigData();
+      const sigName = document.getElementById('sigName')?.value.trim();
+      const sigAddress = document.getElementById('sigAddress')?.value.trim();
+
+      if (!sig.type) { toast('Please provide your signature', 'error'); return; }
+      if (!sigName) { toast('Please enter your name', 'error'); return; }
+      if (!sigAddress) { toast('Please enter the project address', 'error'); return; }
+
+      state.name = sigName;
+      state.address = sigAddress;
+
+      const p = getPrice() || { low: 0, high: 0, mid: 0 };
+
+      document.getElementById('submitBtn').disabled = true;
+      document.getElementById('spinner').classList.add('show');
+
+      try {
+        const payload = {
+          scope: state.scope,
+          size: state.size,
+          extras: state.extras,
+          tier: state.tier,
+          fee_low: p.low,
+          fee_high: p.high,
+          fee_mid: p.mid,
+          client_name: sigName,
+          client_email: state.email,
+          company: state.company,
+          phone: state.phone,
+          project_address: sigAddress,
+          project_type: state.projectType,
+          lot_count: state.lotCount,
+          road_count: state.roadCount,
+          road_length: state.roadLength,
+          external_roadworks: state.externalRoadworks,
+          trunk_infrastructure: state.trunkInfrastructure,
+          sig_type: sig.type,
+          sig_data: sig.data,
+          invite_token: INVITE.token,
+        };
+
+        const res = await fetch('/api/smart-quote-sign', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.success) throw new Error(data.error || 'Submission failed');
+
+        document.getElementById('priceHero').style.display = 'none';
+        document.getElementById('progressTrack').parentElement.style.display = 'none';
+        document.querySelector('.page-intro').style.display = 'none';
+        document.getElementById('stepContainer').innerHTML = confirmScreen(data.ref, data.downloadUrl, data.emailedCopy);
+
+      } catch (err) {
+        toast(err.message, 'error', 6000);
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('spinner').classList.remove('show');
+      }
+    }
+
+    /* CONFIRMATION SCREEN */
+    function confirmScreen(ref, downloadUrl, emailedCopy) {
+      return `<div class="card">
+  <div class="confirm-screen">
+    <div class="confirm-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    </div>
+    <h2>Proposal Signed &amp; Submitted!</h2>
+    <p>Thank you, <strong>${esc(state.name)}</strong>. Your signed fee proposal has been sent to the Concept Engineers team.${emailedCopy ? ` A copy has also been emailed to <strong>${esc(state.email)}</strong>.` : ''} We'll be in touch within 1 business day to confirm next steps.</p>
+    <div class="confirm-ref">Proposal ref: ${esc(ref)}</div>
+    ${downloadUrl ? `
+    <div style="margin-bottom:24px">
+      <a href="${downloadUrl}" class="btn-primary" style="display:inline-flex;text-decoration:none">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Signed Proposal (PDF)
+      </a>
+    </div>`: ''}
+    <div class="next-steps">
+      <h4>What happens next</h4>
+      <div class="next-step-item"><div class="ns-num">1</div><div>Our team reviews your signed proposal and the project details you provided.</div></div>
+      <div class="next-step-item"><div class="ns-num">2</div><div>We'll contact you within 1 business day to arrange a site review or clarify the scope.</div></div>
+      <div class="next-step-item"><div class="ns-num">3</div><div>A formal fee proposal is issued and work commences once approved.</div></div>
+    </div>
+    <div style="margin-top:24px">
+      <a href="https://conceptengineers.com.au" style="color:var(--orange);font-size:13px;font-weight:600;text-decoration:none">Visit conceptengineers.com.au →</a>
+    </div>
+  </div>
+</div>`;
+    }
+
+    /* UTILS */
+    function esc(s) {
+      return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function ynQuestion(key, question, current) {
+      const opts = [['yes', 'Yes'], ['no', 'No'], ['unsure', 'Not sure']];
+      return `<div style="margin-bottom:18px">
+    <label>${question}</label>
+    <div class="tag-grid">
+      ${opts.map(([val, label]) => `
+      <label class="tag-item">
+        <input type="radio" name="${key}" value="${val}" ${current === val ? 'checked' : ''}>
+        ${label}
+      </label>`).join('')}
+    </div>
+  </div>`;
+    }
+
+    /* BOOT */
+    if (INVITE.valid) render();
+  </script>
+</body>
+
+</html>

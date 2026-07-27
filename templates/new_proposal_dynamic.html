@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concept Engineers — Fee Proposal Generator</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-size: 14px;
+            background: #f0f4f8;
+            color: #1a202c;
+            min-height: 100vh;
+        }
+
+        header {
+            background: #153d2b;
+            color: white;
+            padding: 0 16px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            flex-wrap: wrap;
+        }
+
+        header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            margin: 0;
+            white-space: nowrap;
+        }
+
+        .header-badge {
+            font-size: 10px;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 4px 10px;
+            border-radius: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            white-space: nowrap;
+            margin-top: 4px;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 8px;
+            margin-left: auto;
+        }
+
+        .nav-btn {
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            background: transparent;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: rgba(255, 255, 255, 0.18);
+            color: white;
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .nav-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 0 12px;
+                height: 52px;
+                gap: 8px;
+            }
+
+            header h1 {
+                font-size: 16px;
+            }
+
+            .header-badge {
+                font-size: 9px;
+                padding: 3px 8px;
+            }
+
+            .nav-btn {
+                font-size: 12px;
+                padding: 5px 10px;
+                gap: 4px;
+            }
+
+            .nav-btn span {
+                display: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            header {
+                justify-content: space-between;
+            }
+
+            .header-badge {
+                display: none;
+            }
+        }
+
+        .shell {
+            max-width: 1000px;
+            margin: 32px auto;
+            padding: 0 16px 64px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .card-head {
+            background: #f7f9fc;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 12px 20px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #2f8556;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-head svg {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
+        }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .grid2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .grid3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+        }
+
+        .span2 {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 4px;
+        }
+
+        label .opt {
+            font-weight: 400;
+            color: #a0aec0;
+        }
+
+        input[type=text],
+        input[type=email],
+        input[type=date],
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #cbd5e0;
+            border-radius: 5px;
+            font-size: 13.5px;
+            color: #2d3748;
+            background: white;
+            transition: border-color .15s;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2f8556;
+            box-shadow: 0 0 0 3px rgba(47, 133, 86, .12);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .checks {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .chk-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            transition: border-color .15s, background .15s;
+            user-select: none;
+        }
+
+        .chk-label input[type=checkbox] {
+            accent-color: #2f8556;
+            width: 15px;
+            height: 15px;
+        }
+
+        .chk-label:has(input:checked) {
+            border-color: #2f8556;
+            background: #eaf5ef;
+            color: #153d2b;
+        }
+
+        #uw-level-row {
+            display: none;
+            margin-top: 10px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #uw-level-row.visible {
+            display: flex;
+        }
+
+        .row-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .row-table th {
+            text-align: left;
+            font-size: 11px;
+            font-weight: 600;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            padding-bottom: 6px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .row-table td {
+            padding: 5px 4px;
+            vertical-align: middle;
+        }
+
+        .row-table td:last-child {
+            width: 36px;
+            text-align: center;
+        }
+
+        .amount-cell input {
+            text-align: right;
+        }
+
+        .btn-add {
+            margin-top: 10px;
+            background: none;
+            border: 1.5px dashed #cbd5e0;
+            border-radius: 5px;
+            padding: 7px 14px;
+            font-size: 13px;
+            color: #4a5568;
+            cursor: pointer;
+            width: 100%;
+            transition: border-color .15s, color .15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-add svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .btn-add:hover {
+            border-color: #2f8556;
+            color: #2f8556;
+        }
+
+        .btn-del {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #e53e3e;
+            padding: 0 4px;
+            opacity: .6;
+            transition: opacity .15s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-del svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        .btn-del:hover {
+            opacity: 1;
+        }
+
+        .list-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .list-item input {
+            flex: 1;
+        }
+
+        .cap-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .cap-tile {
+            border: 1.5px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: border-color .15s, background .15s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .cap-tile input[type=radio] {
+            accent-color: #2f8556;
+            width: 15px;
+            height: 15px;
+        }
+
+        .cap-tile:has(input:checked) {
+            border-color: #2f8556;
+            background: #eaf5ef;
+            color: #153d2b;
+        }
+
+        #custom-cap {
+            display: none;
+        }
+
+        #custom-cap.visible {
+            display: block;
+        }
+
+        .submit-bar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn-submit {
+            background: #e87722;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 11px 28px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .15s;
+            letter-spacing: 0.2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-submit svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn-submit:hover {
+            background: #d16615;
+        }
+
+        .btn-submit:active {
+            transform: translateY(1px);
+        }
+
+        .btn-submit:disabled {
+            background: #a0aec0;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            color: #4a5568;
+            font-size: 13px;
+        }
+
+        .spinner.show {
+            display: flex;
+        }
+
+        .spin-ring {
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid #e2e8f0;
+            border-top-color: #2f8556;
+            border-radius: 50%;
+            animation: spin .7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Signing banner */
+        .signing-banner {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 18px 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            z-index: 9999;
+            max-width: 480px;
+            width: 90%;
+        }
+
+        .banner-title {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-weight: 700;
+            color: #153d2b;
+            margin-bottom: 6px;
+            font-size: 15px;
+        }
+
+        .banner-title svg {
+            width: 18px;
+            height: 18px;
+            color: #10b981;
+        }
+
+        .banner-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            background: #153d2b;
+            color: white;
+            text-align: center;
+            padding: 11px 16px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 13px;
+            margin-bottom: 12px;
+            margin-top: 12px;
+        }
+
+        .banner-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .banner-actions button {
+            flex: 1;
+            padding: 7px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .banner-actions button svg {
+            width: 13px;
+            height: 13px;
+        }
+
+        .btn-copy-link {
+            border: 1.5px solid #153d2b;
+            background: transparent;
+            color: #153d2b;
+            font-weight: 600;
+        }
+
+        .btn-close-banner {
+            border: 1.5px solid #e2e8f0;
+            background: transparent;
+            color: #718096;
+        }
+
+        /* email status notice inside banner */
+        .email-notice {
+            font-size: 12px;
+            padding: 7px 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .email-notice.ok {
+            background: #eaf7ee;
+            color: #1f6b35;
+            border: 1px solid #9bd6ad;
+        }
+
+        .email-notice.fail {
+            background: #fdeeee;
+            color: #9b2c2c;
+            border: 1px solid #e6a4a4;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #153d2b;
+            color: white;
+            padding: 12px 22px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 500;
+            opacity: 0;
+            transition: opacity .3s, transform .3s;
+            pointer-events: none;
+            z-index: 999;
+            max-width: 90vw;
+            text-align: center;
+        }
+
+        .toast.success {
+            background: #276749;
+        }
+
+        .toast.error {
+            background: #9b2c2c;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        #signing-box {
+            display: none;
+            margin-top: 16px;
+            padding: 14px 18px;
+            background: #eaf5ef;
+            border: 1.5px solid #2f8556;
+            border-radius: 8px;
+        }
+
+        #signing-box p {
+            font-size: 13px;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+
+        #signing-box a {
+            font-size: 13px;
+            color: #2f8556;
+            word-break: break-all;
+        }
+
+        #signing-box a:hover {
+            text-decoration: underline;
+        }
+
+        summary::-webkit-details-marker {
+            display: none;
+        }
+
+        /* Tier fee columns  */
+        .row-table th.tier-col {
+            text-align: left;
+            width: 100px;
+        }
+
+        .row-table th.tier-col[data-tier=bronze] {
+            color: #a15c2b;
+            padding-left: 4px;
+        }
+
+        .row-table th.tier-col[data-tier=silver] {
+            color: #6b7280;
+            padding-left: 4px;
+        }
+
+        .row-table th.tier-col[data-tier=gold] {
+            color: #b7860b;
+            padding-left: 4px;
+        }
+
+        .row-table th.tier-col[data-tier=platinum] {
+            color: #4c51bf;
+            padding-left: 4px;
+        }
+
+        .tier-amount-cell input {
+            text-align: right;
+        }
+
+        @media (max-width: 900px) {
+            .row-table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <a href="/" style="color:white;text-decoration:none">
+            <h1>Concept Engineers</h1>
+        </a>
+
+        <div class="header-badge">CE Proposal System</div>
+
+        <div class="header-nav">
+            <a href="/" class="nav-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+                <span>Home</span>
+            </a>
+
+            <a href="/new-proposal" class="nav-btn active">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                </svg>
+                <span>New Proposal</span>
+            </a>
+
+            <a href="/smart-quote" class="nav-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <line x1="12" y1="1" x2="12" y2="23" />
+                    <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                </svg>
+                <span>Smart Quote</span>
+            </a>
+
+            <a href="/proposals" class="nav-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <line x1="8" y1="6" x2="21" y2="6" />
+                    <line x1="8" y1="12" x2="21" y2="12" />
+                    <line x1="8" y1="18" x2="21" y2="18" />
+                    <line x1="3" y1="6" x2="3.01" y2="6" />
+                    <line x1="3" y1="12" x2="3.01" y2="12" />
+                    <line x1="3" y1="18" x2="3.01" y2="18" />
+                </svg>
+                <span>Proposals</span>
+            </a>
+            {% if user %}
+            <a href="/auth/logout" class="nav-btn" title="Signed in as {{ user.email }} — sign out">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                    <polyline points="16 17 21 12 16 7" />
+                    <line x1="21" y1="12" x2="9" y2="12" />
+                </svg>
+                <span>Sign out</span>
+            </a>
+            {% endif %}
+        </div>
+    </header>
+
+    <div class="shell">
+        <form id="proposalForm">
+
+            <!-- 1. DOCUMENT META -->
+            <div class="card">
+                <div class="card-head">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                        <line x1="10" y1="9" x2="8" y2="9" />
+                    </svg>
+                    Document
+                </div>
+                <div class="card-body">
+                    <div class="grid3">
+                        <div>
+                            <label>Proposal Ref</label>
+                            <input type="text" name="proposal_ref" value="{{ default_ref }}"
+                                placeholder="{{ default_ref }}" required>
+                        </div>
+                        <div>
+                            <label>Date</label>
+                            <input type="date" name="proposal_date" value="{{ today }}" id="proposalDate">
+                        </div>
+                        <div>
+                            <label>Revision</label>
+                            <input type="text" name="revision" value="Rev A" placeholder="Rev A">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. CLIENT & PROJECT -->
+            <div class="card">
+                <div class="card-head">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M3 21h18" />
+                        <path d="M5 21V7l8-4v18" />
+                        <path d="M19 21V11l-6-4" />
+                        <path d="M9 9v.01" />
+                        <path d="M9 12v.01" />
+                        <path d="M9 15v.01" />
+                        <path d="M9 18v.01" />
+                    </svg>
+                    Client &amp; Project
+                </div>
+                <div class="card-body">
+                    <div class="grid2" style="margin-bottom:14px">
+                        <div>
+                            <label>Contact Name</label>
+                            <input type="text" name="contact_name" placeholder="David Lee" required>
+                        </div>
+                        <div>
+                            <label>Company</label>
+                            <input type="text" name="company_name" placeholder="Skyline Developments Pty Ltd">
+                        </div>
+                        <div>
+                            <label>Contact Email</label>
+                            <input type="email" name="contact_email" placeholder="david@skyline.com.au" required>
+                        </div>
+                        <div>
+                            <label>Project / Site Address</label>
+                            <input type="text" name="project_address"
+                                placeholder="42 Riverside Drive, Brisbane QLD 4000" required>
+                        </div>
+                        <div>
+                            <label>Position <span class="opt">(client's job title)</span></label>
+                            <input type="text" name="position" placeholder="e.g. Project Manager">
+                        </div>
+                    </div>
+                    <div>
+                        <label>Project Understanding <span class="opt">(1–2 sentences)</span></label>
+                        <textarea name="project_understanding" rows="3"
+                            placeholder="We understand the project involves…"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. SCOPE -->
+            <div class="card">
+                <div class="card-head">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M9 11l3 3L22 4" />
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                    </svg>
+                    Scope of Services
+                </div>
+                <div class="card-body">
+                    <div class="checks">
+                        <label class="chk-label"><input type="checkbox" name="is_da"> Development Approval (DA)</label>
+                        <label class="chk-label"><input type="checkbox" name="is_dd"> Detailed Design (DD)</label>
+                        <label class="chk-label"><input type="checkbox" name="is_uu"> Urban Utilities (UU)</label>
+                        <label class="chk-label">
+                            <input type="checkbox" name="is_uw" id="cb_uw" onchange="toggleUW()">
+                            Certifier (UW)
+                        </label>
+                        <label class="chk-label"><input type="checkbox" name="uu_works_only"> UU Works Only</label>
+                    </div>
+                    <div id="uw-level-row">
+                        <label style="margin:0; white-space:nowrap">UW Level:</label>
+                        <select name="uw_level">
+                            <option value="Minor">Minor</option>
+                            <option value="Major">Major</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. CAPABILITY -->
+            <div class="card">
+                <div class="card-head">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="8" r="6" />
+                        <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
+                    </svg>
+                    Capability Profile
+                </div>
+                <div class="card-body">
+                    <div class="cap-grid">
+                        <label class="cap-tile">
+                            <input type="radio" name="capability_profile" value="residential" checked
+                                onchange="capChange()">
+                            Residential Subdivision
+                        </label>
+                        <label class="cap-tile">
+                            <input type="radio" name="capability_profile" value="commercial" onchange="capChange()">
+                            Commercial &amp; Industrial
+                        </label>
+                        <label class="cap-tile">
+                            <input type="radio" name="capability_profile" value="infrastructure" onchange="capChange()">
+                            Civil Infrastructure
+                        </label>
+                        <label class="cap-tile">
+                            <input type="radio" name="capability_profile" value="stormwater" onchange="capChange()">
+                            Stormwater &amp; Drainage
+                        </label>
+                        <label class="cap-tile">
+                            <input type="radio" name="capability_profile" value="custom" onchange="capChange()">
+                            Custom…
+                        </label>
+                    </div>
+                    <div id="custom-cap">
+                        <div style="margin-bottom:10px">
+                            <label>Custom Profile Title</label>
+                            <input type="text" name="capability_title" placeholder="e.g. Land Development">
+                        </div>
+                        <div>
+                            <label>Custom Profile Body</label>
+                            <textarea name="capability_body" rows="3"
+                                placeholder="Describe your firm's relevant capability…"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. FEE SCHEDULE -->
+            <div class="card">
+                <div class="card-head">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <line x1="12" y1="1" x2="12" y2="23" />
+                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    </svg>
+                    Fee Schedule
+                </div>
+                <div class="card-body">
+
+                    <table class="row-table" id="fee-table">
+                        <thead>
+                            <tr>
+                                <th>Service Component</th>
+                                <th class="tier-col" data-tier="bronze">Bronze</th>
+                                <th class="tier-col" data-tier="silver">Silver</th>
+                                <th class="tier-col" data-tier="gold">Gold</th>
+                                <th class="tier-col" data-tier="platinum">Platinum</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="fee-rows">
+                            <tr>
+                                <td><input type="text" name="fee_desc[]"
+                                        placeholder="Development Approval (DA) civil engineering"></td>
+                                <td class="tier-amount-cell"><input type="text" name="fee_amount_bronze[]"
+                                        placeholder="8,500.00"></td>
+                                <td class="tier-amount-cell"><input type="text" name="fee_amount_silver[]"
+                                        placeholder="0.00"></td>
+                                <td class="tier-amount-cell"><input type="text" name="fee_amount_gold[]"
+                                        placeholder="0.00"></td>
+                                <td class="tier-amount-cell"><input type="text" name="fee_amount_platinum[]"
+                                        placeholder="0.00"></td>
+                                <td>
+                                    <button type="button" class="btn-del" onclick="delRow(this)">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round">
+                                            <line x1="18" y1="6" x2="6" y2="18" />
+                                            <line x1="6" y1="6" x2="18" y2="18" />
+                                        </svg>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn-add" onclick="addFeeRow()">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        Add fee line
+                    </button>
+
+                    <div style="margin-top:20px; border-top:1px solid #e2e8f0; padding-top:16px">
+                        <div style="font-size:12px; font-weight:600; color:#4a5568; margin-bottom:10px;
+                      text-transform:uppercase; letter-spacing:.4px">
+                            Hourly Rates <span style="font-weight:400; color:#a0aec0">(optional — leave empty to
+                                omit)</span>
+                        </div>
+                        <table class="row-table" id="hr-table">
+                            <thead>
+                                <tr>
+                                    <th>Role</th>
+                                    <th style="width:160px">Rate (AUD/hr ex GST)</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody id="hr-rows"></tbody>
+                        </table>
+                        <button type="button" class="btn-add" onclick="addHrRow()">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            Add hourly rate
+                        </button>
+                    </div>
+
+                    <div style="margin-top:16px">
+                        <label>Payment Terms</label>
+                        <input type="text" name="payment_terms"
+                            value="Fees are invoiced at agreed milestones, payable within 14 days.">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. ASSUMPTIONS / EXCLUSIONS -->
+            <div class="card">
+                <div class="card-head">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M9 11l3 3L22 4" />
+                        <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                    </svg>
+                    Assumptions &amp; Exclusions
+                </div>
+                <div class="card-body grid2">
+                    <div>
+                        <label style="margin-bottom:8px">Assumptions</label>
+                        <div id="assumption-list">
+                            <div class="list-item">
+                                <input type="text" name="assumption[]"
+                                    placeholder="A current detail survey will be provided.">
+                                <button type="button" class="btn-del" onclick="delRow(this)">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-add"
+                            onclick="addListItem('assumption-list','assumption[]','Add assumption')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            Add
+                        </button>
+                    </div>
+                    <div>
+                        <label style="margin-bottom:8px">Exclusions</label>
+                        <div id="exclusion-list">
+                            <div class="list-item">
+                                <input type="text" name="exclusion[]"
+                                    placeholder="Authority application and lodgement fees.">
+                                <button type="button" class="btn-del" onclick="delRow(this)">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="18" y1="6" x2="6" y2="18" />
+                                        <line x1="6" y1="6" x2="18" y2="18" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-add"
+                            onclick="addListItem('exclusion-list','exclusion[]','Add exclusion')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            Add
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. SENDER (collapsible) -->
+            <details class="card" style="overflow:visible">
+                <summary class="card-head"
+                    style="cursor:pointer; list-style:none; display:flex; justify-content:space-between">
+                    <span style="display:flex; align-items:center; gap:8px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px;">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
+                        Sender Details
+                    </span>
+                    <span style="color:#a0aec0; font-weight:400">▾</span>
+                </summary>
+                <div class="card-body grid2">
+                    <div>
+                        <label>Name</label>
+                        <input type="text" name="sender_name" value="Concept Engineers Team">
+                    </div>
+                    <div>
+                        <label>Title</label>
+                        <input type="text" name="sender_title" value="" placeholder="e.g. Project Engineer">
+                    </div>
+                    <div>
+                        <label>Email</label>
+                        <input type="email" name="sender_email" value="admin@conceptengineers.com.au ">
+                    </div>
+                    <div>
+                        <label>Phone</label>
+                        <input type="text" name="sender_phone" value="+61 7 0000 0000">
+                    </div>
+                </div>
+            </details>
+
+            <!-- SUBMIT BAR -->
+            <div class="submit-bar">
+                <button type="button" class="btn-submit" id="generateBtn" onclick="handleGenerate()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                    </svg>
+                    Send for Signing
+                </button>
+                <div class="spinner" id="spinner">
+                    <div class="spin-ring"></div>
+                    <span id="spinner-label">Processing…</span>
+                </div>
+            </div>
+
+            <!-- Signing link appears here after success -->
+            <div id="signing-box">
+                <p>✅ Signing link created! Send this to your client (or it's ready below):</p>
+                <a id="signing-link" href="#" target="_blank" rel="noopener"></a>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        // UI helpers
+
+        function toast(msg, type = "success", duration = 5000) {
+            const el = document.getElementById("toast");
+            el.textContent = msg;
+            el.className = `toast ${type} show`;
+            clearTimeout(el._t);
+            el._t = setTimeout(() => { el.className = "toast"; }, duration);
+        }
+
+        function setSpinner(on, label = "Processing…") {
+            document.getElementById("spinner").classList.toggle("show", on);
+            document.getElementById("spinner-label").textContent = label;
+            document.getElementById("generateBtn").disabled = on;
+        }
+
+        // Scope toggles
+        function toggleUW() {
+            const row = document.getElementById("uw-level-row");
+            row.classList.toggle("visible", document.getElementById("cb_uw").checked);
+        }
+
+        function capChange() {
+            const val = document.querySelector("[name=capability_profile]:checked")?.value;
+            document.getElementById("custom-cap").classList.toggle("visible", val === "custom");
+        }
+
+        // Dynamic row / list helpers
+        const DEL_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
+
+        function addFeeRow() {
+            const tbody = document.getElementById("fee-rows");
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+      <td><input type="text" name="fee_desc[]" placeholder="Service description"></td>
+      <td class="tier-amount-cell"><input type="text" name="fee_amount_bronze[]" placeholder="0.00"></td>
+      <td class="tier-amount-cell"><input type="text" name="fee_amount_silver[]" placeholder="0.00"></td>
+      <td class="tier-amount-cell"><input type="text" name="fee_amount_gold[]" placeholder="0.00"></td>
+      <td class="tier-amount-cell"><input type="text" name="fee_amount_platinum[]" placeholder="0.00"></td>
+      <td><button type="button" class="btn-del" onclick="delRow(this)">${DEL_ICON}</button></td>`;
+            tbody.appendChild(tr);
+            tr.querySelector("input").focus();
+        }
+
+        function addHrRow() {
+            const tbody = document.getElementById("hr-rows");
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+      <td><input type="text" name="hourly_role[]" placeholder="Senior Engineer"></td>
+      <td class="amount-cell"><input type="text" name="hourly_rate[]" placeholder="185.00"></td>
+      <td><button type="button" class="btn-del" onclick="delRow(this)">${DEL_ICON}</button></td>`;
+            tbody.appendChild(tr);
+            tr.querySelector("input").focus();
+        }
+
+        function addListItem(listId, fieldName, placeholder) {
+            const list = document.getElementById(listId);
+            const div = document.createElement("div");
+            div.className = "list-item";
+            div.innerHTML = `
+      <input type="text" name="${fieldName}" placeholder="${placeholder}">
+      <button type="button" class="btn-del" onclick="delRow(this)">${DEL_ICON}</button>`;
+            list.appendChild(div);
+            div.querySelector("input").focus();
+        }
+
+        function delRow(btn) {
+            const row = btn.closest("tr") || btn.closest(".list-item") || btn.closest(".tier-row");
+            if (row) row.remove();
+        }
+
+        // Main generate + create signing link flow
+        async function handleGenerate() {
+            const form = document.getElementById("proposalForm");
+            const formData = new FormData(form);
+
+            // Basic client-side validation
+            const ref = formData.get("proposal_ref")?.trim();
+            const name = formData.get("contact_name")?.trim();
+            const email = formData.get("contact_email")?.trim();
+            const address = formData.get("project_address")?.trim();
+
+            if (!ref) { toast("Proposal Ref is required.", "error"); return; }
+            if (!name) { toast("Contact Name is required.", "error"); return; }
+            if (!email) { toast("Contact Email is required.", "error"); return; }
+            if (!address) { toast("Project Address is required.", "error"); return; }
+
+            setSpinner(true, "Generating & sending…");
+            document.getElementById("signing-box").style.display = "none";
+
+            try {
+                // One request: the server renders the proposal, converts to PDF,
+                // stores it, creates the signing token and emails the client. The
+                // document never round-trips through the browser (was the cause of
+                // slow generation + 413 errors on the full branded template).
+                const linkRes = await fetch("/api/generate-and-send", { method: "POST", body: formData });
+                let linkData;
+                try {
+                    linkData = await linkRes.json();
+                } catch {
+                    throw new Error(`Server error (${linkRes.status}). The proposal may be too large for the server's upload limit.`);
+                }
+                if (!linkRes.ok || !linkData.success) {
+                    throw new Error(linkData.error || "Failed to create signing link");
+                }
+
+                // Success
+                if (linkData.emailSent) {
+                    toast(`✅ Signing link emailed to ${email}`, "success", 8000);
+                } else {
+                    toast(`⚠️ Link created, but email failed: ${linkData.emailError || "unknown error"}`, "error", 10000);
+                }
+
+                const old = document.getElementById('signing-banner');
+                if (old) old.remove();
+
+                const banner = document.createElement('div');
+                banner.id = 'signing-banner';
+                banner.className = 'signing-banner';
+                banner.innerHTML = `
+                  <div class="banner-title">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                    Signing Link Created!
+                  </div>
+                  <div class="${linkData.emailSent ? 'email-notice ok' : 'email-notice fail'}">
+                    ${linkData.emailSent
+                        ? `✅ Signing email sent to <strong>${email}</strong>`
+                        : `⚠️ Email failed: ${linkData.emailError || 'unknown error'}. Share the link below manually.`}
+                  </div>
+                  <a href="${linkData.signingUrl}" target="_blank" class="banner-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                    Open Client Signing Page
+                  </a>
+                  <div style="font-size:11px;color:#718096;word-break:break-all;margin-bottom:8px;" id="signingUrlText">${linkData.signingUrl}</div>
+                  <div class="banner-actions">
+                    <button class="btn-copy-link" onclick="navigator.clipboard.writeText(document.getElementById('signingUrlText').textContent).then(()=>toast('Link copied!','success'))">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                      Copy Link
+                    </button>
+                    <button class="btn-close-banner" onclick="document.getElementById('signing-banner').remove()">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      Close
+                    </button>
+                  </div>`;
+                document.body.appendChild(banner);
+
+            } catch (err) {
+                console.error("[handleGenerate] Error:", err);
+                toast(`❌ ${err.message}`, "error", 10000);
+            } finally {
+                setSpinner(false);
+            }
+        }
+
+        /* INIT */
+        render();
+    </script>
+</body>
+
+</html>
