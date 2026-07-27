@@ -5,7 +5,6 @@ __pycache__/
 *.tmp
 
 # Secrets — never commit credentials
-.env
 
 # Client documents & signing data — private, stays local to the server
 storage/
@@ -14,3 +13,8 @@ signing.db
 # Node (leftover lockfiles)
 node_modules/
 /requirements
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
+config.bat
