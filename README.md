@@ -1,130 +1,169 @@
 # Concept Engineers — Fee Proposal Automation
+## Project Worksheet — What Was Built, Complete Workflow, and Library Usage
 
-Flask app that generates civil engineering fee proposals from a Word template, sends them for e-signature, and lets clients build & sign their own quote via a self-service link ("Smart Quote"). Signing is fully self-hosted (no DocuSeal, no third-party e-sign service).
+Source: https://github.com/waqasahmed042/proposal (branch: `main`)
 
-## Access model (two separate audiences)
+---
 
-The app has a hard split between staff and clients — see `auth.py`:
+## 1. What This Project Is
 
-- **Staff** — the internal team. Every staff page/API (`/`, `/proposals`, `/new-proposal`, `/smart-quote`, `/api/generate-and-send`, …) is behind `@auth.login_required` and requires **Microsoft Entra ID (Azure AD) sign-in** with a Concept Engineers work account. The app registration is single-tenant, so only accounts inside the tenant can sign in; `STAFF_ALLOWED_EMAILS` can narrow it further to named people. Auth fails **closed** — if sign-in isn't configured, staff routes are blocked (503), never left open.
-- **Clients** — external, never sign in, have no account. A client reaches exactly one document through an unguessable 256-bit link token (`/quote/<token>`, `/sign/<token>`, `/document/<token>`, `/api/sign/<token>`, `/api/smart-quote-sign`). The token *is* the authorisation and maps to a single row, so a client can only ever see their own document — never the dashboard or another client's file. These routes are intentionally NOT behind sign-in.
+A Flask web app for a civil engineering firm (Concept Engineers) that:
+- Generates fee proposals from a Word template
+- Sends them to clients for e-signature (self-hosted — no DocuSeal, no third-party e-sign service)
+- Lets clients build their own quote via a self-service link ("Smart Quote") and sign it inline
+- Tracks every proposal/invite in a dashboard with status (pending/signed/expired/void)
+- Gates all internal/staff pages behind Microsoft Entra ID (Azure AD) sign-in, while every client-facing page is authorized only by an unguessable link token (no login)
 
-`AUTH_ENABLED=false` bypasses staff sign-in — **local development only**.
+---
 
-## What it does
-
-- **New Proposal** (`/new-proposal`) — staff fill in a form; the app renders `master_proposal_template.docx` via Jinja (docxtpl), converts it to PDF, and sends the client a signing link. It does not download a copy locally — the generated document is always viewable/downloadable from the `/proposals` dashboard.
-- **Sent Proposals** (`/proposals`) — dashboard of every proposal sent for signature: status (pending/signed/expired/void), resend, view/download PDF & DOCX.
-- **Smart Quote** (`/smart-quote` internal preview; client link is `/quote/<token>`) — a self-service quote builder. The client picks scope, project size, add-ons and service tier, sees a live price estimate, then signs inline. On submit the app generates the document, stamps the signature, saves it, and emails the signed copy to both the client and the firm.
-- **E-signing** (`/sign/<token>`) — mobile-friendly signing page (draw / type / upload signature) for proposals sent the traditional way.
-
-## Architecture
-
-| Concern | How it's done |
-|---|---|
-| Document generation | `docxtpl` renders `master_proposal_template.docx` — built from the client's real branded proposal (`requirements/26000-FP01-Proposal.docx`) via `build_template_from_reference.py`. Scope switches (`is_da`, `is_dd`, `is_uu_minor`, `is_uu_major`, `is_unitywater`) include/remove whole sections & fee tables; `has_construction`/`has_as_constructed` toggle phase rows inside them. To rebuild after the client updates their reference doc: copy it over `master_proposal_template.docx`, adjust paragraph indices in the script if the doc structure changed, run the script. |
-| DOCX → PDF | `docx2pdf` (MS Word) on Windows/macOS; **LibreOffice headless** (`soffice`) on Linux — see `docx_to_pdf()` in `app.py` |
-| Signature stamping | `signing.py` (PyMuPDF/`fitz`) finds `{{signature}}` / `{{date}}` placeholders left in the rendered PDF and stamps the signature image/typed name + date directly over them. The template reserves 36pt of `space_after` on the signature paragraph specifically so the stamp has real vertical room (~40pt) instead of being squeezed onto one text line — see `SIG_WIDTH`/`SIG_BOTTOM_OVERHANG` in `signing.py` if this ever needs retuning. |
-| Storage | SQLite, `signing.db` — tables `signing_tokens` (traditional signing flow) and `quote_invites` (Smart Quote invite links); generated documents live under `storage/proposals/` and `storage/signed/` |
-| Email | Microsoft Graph API (`mailer.py`), app-only OAuth (client-credentials flow) — no SMTP passwords |
-
-### Key files
+## 2. Repository Structure
 
 ```
-app.py                         Flask routes, PDF conversion, quote-sign endpoint
-db.py                          SQLite schema + queries (signing_tokens, quote_invites)
-mailer.py                      MS Graph email sending (signing links, quote invites, signed copies)
-signing.py                     PDF signature stamping (PyMuPDF)
-calibrate_signature_box.py     Dev tool to visually check signature placement on the PDF
-check_template.py              Dev tool to inspect docxtpl tags in the master template
-master_proposal_template.docx  The Word template rendered for every proposal
+app.py                          Flask routes, PDF conversion, quote-sign endpoint
+auth.py                         Microsoft Entra ID (Azure AD) staff sign-in
+db.py                           SQLite schema + queries
+mailer.py                       Email sending via Microsoft Graph API
+signing.py                      PDF signature stamping (PyMuPDF)
+build_template_from_reference.py  Dev tool: builds master_proposal_template.docx from client's real doc
+calibrate_signature_box.py      Dev tool: visually check signature placement
+check_template.py               Dev tool: inspect docxtpl tags in the template
+master_proposal_template.docx   The Word template rendered for every proposal
+requirements.txt                Python dependencies
+.env.example                    Environment variable reference
+pytest.ini                      Test configuration
+
 templates/
-  home.html                   Landing page (3 entry points)
-  form.html                   Staff-facing "New Proposal" form
-  proposals.html              Sent-proposals dashboard
-  smart_quote_invite.html     Staff-facing "send a Smart Quote link" page
-  smart_quote.html            Client-facing Smart Quote builder + inline signing
-  new_proposal_dynamic.html   Dynamic variant of the proposal form
-  sign.html                   Mobile signing page for traditionally-sent proposals
+  home.html                    Landing page (3 entry points)
+  login.html                   Staff sign-in page
+  form.html                    Staff-facing "New Proposal" form
+  proposals.html                Sent-proposals dashboard
+  smart_quote_invite.html       Staff-facing "send a Smart Quote link" page
+  smart_quote.html              Client-facing Smart Quote builder + inline signing
+  new_proposal_dynamic.html     Dynamic variant of the proposal form
+  sign.html                     Mobile signing page for traditionally-sent proposals
+
+tests/
+  conftest.py                   Shared fixtures (isolated temp DB/storage)
+  test_auth.py                  Staff sign-in / access control
+  test_db.py                    db.py functions directly
+  test_pages.py                 Every route renders; unknown tokens 404
+  test_quote_invite_flow.py     Staff sends invite → client link works → resend
+  test_signing_module.py        signing.stamp_signature() in isolation
+  test_smart_quote_sign.py      Client self-service sign flow end-to-end
+  test_traditional_signing_flow.py  Staff-sent proposal → client signs → download
 ```
 
-## Setup
+---
 
-### 1. Requirements
+## 3. Complete Workflow
 
-```bash
-pip install -r requirements.txt
-```
+### A. Access model (two separate audiences)
 
-On Linux (and the production VPS) you also need LibreOffice for DOCX→PDF conversion:
+| Audience | How they get in | Protected by |
+|---|---|---|
+| **Staff** (internal team) | Sign in with Microsoft 365 work account | `@auth.login_required` on every staff route (`/`, `/proposals`, `/new-proposal`, `/smart-quote`, `/api/generate-and-send`, …). Single-tenant Azure app registration — only accounts inside the Concept Engineers tenant can sign in at all; `STAFF_ALLOWED_EMAILS` can narrow further. **Fails closed**: if auth isn't configured, staff routes return 503 rather than opening up. |
+| **Clients** (external) | An unguessable 256-bit link token (`secrets.token_urlsafe(32)`) | The token *is* the authorization — it maps to exactly one row in the database, so a client can only ever reach their own document, never the dashboard or anyone else's file. These routes (`/quote/<token>`, `/sign/<token>`, `/document/<token>`, `/api/sign/<token>`, `/api/smart-quote-sign`) are intentionally **not** behind login. |
 
-```bash
-apt install -y --no-install-recommends libreoffice-writer fonts-liberation
-```
+### B. Flow 1 — Traditional "New Proposal" (staff-initiated)
 
-### 2. Environment variables
+1. Staff signs in → visits `/new-proposal` → fills out `form.html`
+2. Submits to `/api/generate-and-send`:
+   - Renders `master_proposal_template.docx` via **docxtpl** (Jinja templating) with the form's field values (`build_context()`)
+   - Converts DOCX → PDF (`docx_to_pdf()` — MS Word via `docx2pdf` on Windows/macOS, LibreOffice headless on Linux/production)
+   - Saves the PDF to `storage/proposals/`
+   - Creates a `signing_tokens` row in SQLite (`db.create_signing_token()`), expiring in 7 days
+   - Emails the client a signing link via **Microsoft Graph API** (`mailer.send_signing_link_email()`)
+3. Client opens `/sign/<token>` (`sign.html`) — no login. Draws, types, or uploads a signature.
+4. Submits to `/api/sign/<token>`:
+   - `signing.stamp_signature()` finds the `{{signature}}` / `{{date}}` placeholders left in the PDF text layer (via **PyMuPDF**) and stamps the signature image (or typed name) and date directly over them
+   - `db.mark_signed()` updates the row to `status='signed'`
+   - Emails both the client (their signed copy) and the firm (signed notification) — each with the signed PDF attached
+5. Staff can track everything on `/proposals` (`proposals.html`) — status, resend, view/download PDF & DOCX.
 
-Copy `.env.example` to `.env` and fill in:
+### C. Flow 2 — Smart Quote (client self-service)
 
-```
-PUBLIC_BASE_URL=http://localhost:5000     # real domain in production — used to build emailed links
+1. Staff visits `/smart-quote` (`smart_quote_invite.html`) → enters client name/email/project address → `/api/send-quote-invite`:
+   - Creates a `quote_invites` row (`db.create_quote_invite()`), expiring in 14 days
+   - Emails the client a `/quote/<token>` link (`mailer.send_quote_invite_email()`)
+2. Client opens `/quote/<token>` → `smart_quote.html` — picks scope (DA/DD/UU/UnityWater), project size, add-ons, and service tier (Bronze/Silver/Gold/Platinum). Price updates live in the browser.
+3. Client signs inline (same draw/type/upload widget as Flow 1) and submits to `/api/smart-quote-sign`:
+   - Re-validates the invite token server-side
+   - Builds the full docxtpl context from the quote selections (`build_template_context()`) — this includes computing fee-table totals for whichever scope sections were selected
+   - Renders → converts to PDF → stamps signature (same `signing.py` pipeline as Flow 1) — **in one shot**, since the client is signing at submission time, not via a separate emailed link
+   - Marks the invite `completed` (`db.mark_invite_completed()`) so the link can't be reused
+   - Emails the signed copy to both client and firm
+4. `/smart-quote-preview` exists purely for staff to preview the client-facing wizard UI without a real invite token (submissions from it are rejected server-side).
 
-MS_TENANT_ID=...
-MS_CLIENT_ID=...
-MS_CLIENT_SECRET=...
-MAIL_SENDER=admin@conceptengineers.com.au   # must be a real, licensed Microsoft 365 mailbox
-MAIL_SENDER_NAME=Concept Engineers
-```
+### D. Document template mechanics (the clever part)
 
-**Azure App Registration (one-time):**
-1. Azure Portal → Microsoft Entra ID → App registrations → New registration. Supported account types: **single tenant**.
-2. API permissions → Add a permission → Microsoft Graph → **Application permissions** → `Mail.Send` → **Grant admin consent** (required, or sending fails with 403).
-3. Certificates & secrets → New client secret → copy the secret **value** into `MS_CLIENT_SECRET`.
+`master_proposal_template.docx` was built from the client's real branded document via `build_template_from_reference.py`. It has:
+- **Scope switches** (`is_da`, `is_dd`, `is_uu_minor`, `is_uu_major`, `is_unitywater`) — Jinja conditionals in the DOCX that include/remove entire sections and fee tables depending on what was selected
+- **Phase toggles** (`has_construction`, `has_as_constructed`) — turn on/off extra rows inside those fee tables
+- **Deferred signing tags**: the template uses `[[signature]]` / `[[date]]` (deliberately *not* valid Jinja syntax) in the signature block. After docxtpl renders everything else, `inject_deferred_signing_tags()` converts those two tags into literal `{{signature}}` / `{{date}}` text — which survives PDF conversion untouched, so `signing.py` can find and stamp over them later once the actual signature/date are known (at signing time, not generation time).
 
-### 3. Run
+---
 
-```bash
-python app.py          # dev server, http://localhost:5000
-```
+## 4. Library Usage — What Does What
 
-In production the VPS runs it under **gunicorn + PM2** (see `.github/workflows/deploy.yml`).
+| Library | Used for | Where |
+|---|---|---|
+| **Flask** | Web framework — all routes, request/response handling, sessions | `app.py`, `auth.py` |
+| **docxtpl** | Renders `master_proposal_template.docx` as a Jinja template — fills in client/project/fee data and conditionally includes/excludes whole sections via scope switches | `app.py` (`build_context()`, `build_template_context()`, `_render_proposal_to()`) |
+| **python-docx** | Low-level DOCX manipulation — specifically to find and rewrite the `[[signature]]`/`[[date]]` deferred tags into `{{signature}}`/`{{date}}` *after* docxtpl has already rendered everything else | `app.py` (`inject_deferred_signing_tags()`) |
+| **docx2pdf** | Converts the rendered DOCX to PDF using MS Word — works on Windows/macOS dev machines only | `app.py` (`docx_to_pdf()`) |
+| **LibreOffice** (`soffice`, external binary, not a Python package) | Same DOCX→PDF conversion, but headless — this is what actually runs in production on the Linux VPS, since Word isn't available there | `app.py` (`docx_to_pdf()`, Linux fallback path) |
+| **PyMuPDF** (`fitz`) | Reads the generated PDF's text layer, finds the `{{signature}}`/`{{date}}` placeholder text, redacts it, and stamps the real signature image (or typed name in an oblique font) and date directly on top | `signing.py` |
+| **msal** (Microsoft Authentication Library) | Implements the OAuth2 authorization-code flow for staff sign-in against Microsoft Entra ID (Azure AD) — builds the login URL, exchanges the auth code for tokens, validates state/nonce/PKCE | `auth.py` |
+| **requests** | HTTP client used to call the Microsoft Graph API directly — both for getting an OAuth app-only access token (client-credentials flow) and for the actual `sendMail` call | `mailer.py` |
+| **sqlite3** (Python standard library) | All persistent storage — two tables: `signing_tokens` (traditional proposals) and `quote_invites` (Smart Quote links) | `db.py` |
+| **secrets** (standard library) | Generates the unguessable 256-bit URL-safe tokens that authorize client access to their document | `db.py` |
+| **python-dotenv** | Loads `.env` file contents into environment variables for local development | `app.py` |
+| **gunicorn** | Production WSGI server that actually runs the Flask app on the VPS (behind PM2) | Deployment only, not imported in application code |
+| **pytest** | Test runner for the whole `tests/` suite | Dev/CI only |
 
-## Running tests
+### Why Microsoft Graph instead of SMTP
 
-```bash
-pip install -r requirements.txt   # includes pytest
-pytest -q
-```
+The codebase evolved from a dual SMTP/MS Graph setup (visible as commented-out code at the top of `mailer.py`) to **Graph-only**. Sending is app-only OAuth (client-credentials flow, no user interaction, no stored passwords) — the same Azure app registration is reused for both staff sign-in (`auth.py`, delegated `User.Read` permission) and mail sending (`mailer.py`, application `Mail.Send` permission, requires admin consent).
 
-Each test runs against an isolated temp SQLite DB and temp `storage/` dir (via fixtures in `tests/conftest.py`), and email sending is stubbed at `mailer._send` — no real DB rows, files, or emails from your real setup are touched, and no Microsoft Graph credentials are required to run the suite.
+### Why not DocuSeal
 
-`tests/test_smart_quote_sign.py` and `tests/test_traditional_signing_flow.py` exercise the real DOCX→PDF conversion, so they need either MS Word (via `docx2pdf`, Windows/macOS) or LibreOffice (`soffice` on PATH, Linux) available — the same requirement the app itself has in production.
+The README notes DocuSeal was evaluated and dropped — its self-hosted community edition blocks template-upload API endpoints behind a paid tier, so signing was built fully custom instead (docxtpl + PyMuPDF, as above).
 
-| File | Covers |
+---
+
+## 5. Testing
+
+Every test runs against an isolated temp SQLite DB and temp `storage/` directory (fixtures in `tests/conftest.py`); `mailer._send` is stubbed so no real emails go out and no Microsoft Graph credentials are needed to run the suite.
+
+| Test file | Covers |
 |---|---|
 | `test_pages.py` | Every page route renders; unknown tokens 404 |
-| `test_db.py` | `db.py` functions directly (signing tokens + quote invites) |
-| `test_signing_module.py` | `signing.stamp_signature()` in isolation — draw + typed signatures, missing placeholder |
+| `test_auth.py` | Staff sign-in / access control behavior |
+| `test_db.py` | `db.py` functions directly (both tables) |
+| `test_signing_module.py` | `signing.stamp_signature()` in isolation — draw + typed signatures, missing-placeholder case |
 | `test_quote_invite_flow.py` | Staff sends a Smart Quote invite → link renders prefilled → resend |
-| `test_smart_quote_sign.py` | Client self-service sign flow end-to-end, including regression tests for the typed-signature font bug and the silent-stamping-failure bug |
-| `test_traditional_signing_flow.py` | Staff-sent proposal → client signs → document download, full round trip |
+| `test_smart_quote_sign.py` | Full client self-service sign flow, including regression tests for two specific historical bugs: the typed-signature invalid-font bug, and a silent-stamping-failure bug |
+| `test_traditional_signing_flow.py` | Full round trip: staff-sent proposal → client signs → document download |
 
-## Deployment
+Two of these (`test_smart_quote_sign.py`, `test_traditional_signing_flow.py`) exercise real DOCX→PDF conversion, so they need either MS Word or LibreOffice actually installed — same requirement as production.
 
-Pushing to `master` auto-deploys to the VPS via GitHub Actions (`.github/workflows/deploy.yml`): rsyncs the repo (excluding `.env`, `signing.db`, `storage/`), installs `requirements.txt` into a venv, and restarts the app under PM2/gunicorn.
+---
 
-Required GitHub secrets: `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY` (base64-encoded private key).
+## 6. Deployment
 
-`signing.db` and `storage/` are **never overwritten by deploys** — they hold real client data and persist independently on the VPS disk.
+- Push to `main`/`master` → GitHub Actions (`.github/workflows/deploy.yml`) rsyncs the repo to a VPS (excluding `.env`, `signing.db`, `storage/`), installs `requirements.txt` into a venv, restarts under **PM2 + gunicorn**.
+- `signing.db` and `storage/` (real client data) are never overwritten by deploys — they persist independently on the VPS disk.
+- Required GitHub secrets: `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`.
 
-## Notes on routes
+---
 
-- `/smart-quote` — staff-facing page to send a client a Smart Quote invite link (`templates/smart_quote_invite.html`). Creates a `quote_invites` DB row via `db.create_quote_invite()` and emails a `/quote/<token>` link.
-- `/smart-quote-preview` — internal-only preview of the client funnel UI (no real invite token, submissions are rejected).
-- `templates/quote_funnel.html` was replaced by `templates/smart_quote.html` — if you find references to the old name, they're stale.
+## 7. Notable Engineering Decisions Worth Knowing
 
-## Notes for whoever picks this up next
+1. **Deferred-tag signing trick**: rather than needing static PDF coordinates for the signature, the template uses inert `[[signature]]`/`[[date]]` markers that get converted to real placeholder text *after* Jinja rendering, so PyMuPDF can locate them by text search regardless of what page they land on or how the surrounding content shifts.
+2. **`/api/generate-and-send` replaced a base64 round-trip design**: an earlier version generated the document client-side, base64-encoded it, and POSTed the whole thing back to the server to create the signing link. That was slow and could exceed nginx's request-size limit on large templates. The current version renders and stores the document entirely server-side in one request — the browser never sees the document bytes.
+3. **Client vs staff routes are deliberately unauthenticated by design for clients** — the security model relies entirely on token unguessability (256-bit, `secrets.token_urlsafe`) rather than accounts, since clients shouldn't need to create one.
+4. **Two known historical bugs are permanently regression-tested**: an invalid PyMuPDF font name (`"helv-oblique"` doesn't exist — must be `"heit"`) that broke every typed signature, and a silent-failure bug where a stamping error used to fall back to emailing the *unsigned* document captioned as "signed." Both now fail loudly instead.
 
-- Sender identity is deliberately generic: `Concept Engineers Team` / `admin@conceptengineers.com.au ` (not a named staff member) so emails aren't tied to one person leaving.
-- Placeholder firm details (ABN, phone) are hardcoded in `app.py`'s `build_context()` — update before real client use.
-- DocuSeal was evaluated and dropped: its self-hosted community edition blocks all template-upload API endpoints (Pro-only), which is why signing is fully custom.
+---
+
+*Compiled by fetching the live repository via the GitHub API/raw content — reflects the actual current `main` branch, not any earlier draft.*
