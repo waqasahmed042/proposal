@@ -3,6 +3,10 @@ app.py — Concept Engineers Fee Proposal + Custom E-Signing
 (DocuSeal fully removed — self-managed signing via SQLite + reportlab/pypdf)
 """
 
+import utils.clients
+import utils.http_session
+import utils.transport
+import utils.session
 import os
 import tempfile
 import shutil
